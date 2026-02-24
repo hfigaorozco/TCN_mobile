@@ -15,7 +15,6 @@ class MyApp extends StatelessWidget {
 }
 
 // Pantalla de Home
-
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -27,7 +26,21 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Tu Cuervo Móvil")),
+
+      backgroundColor: Colors.white,
+
+      appBar: AppBar(
+        title: const Text("Tu Cuervo Móvil",
+          style: TextStyle(
+            color: Color.fromARGB(255, 0, 8, 255),
+            fontWeight: FontWeight.bold,
+            fontSize: 16,
+          ),
+        ),
+        centerTitle: true,
+        backgroundColor: const Color.fromARGB(255, 79, 175, 239),
+      ),
+
       body: Padding(
         padding: EdgeInsetsGeometry.all(24.00),
         child: Center(
@@ -39,6 +52,12 @@ class _HomeScreenState extends State<HomeScreen> {
             children: [
 
               // Logo de TCN
+              Image.asset(
+                'assets/images/Logo TCN azul.png',
+                height: 120,
+              ),
+
+              const SizedBox(height: 40,)
 
               // Text de Ingresar Origen
 
@@ -59,7 +78,34 @@ class _HomeScreenState extends State<HomeScreen> {
             ]
           )
         )
-      )
+      ),
+
+      bottomNavigationBar: BottomNavigationBar(
+        items: [
+
+          // Home
+          BottomNavigationBarItem(
+            icon: const Icon(Icons.home),
+            activeIcon: const Icon(Icons.home_outlined),
+            label: "Home",
+          ),
+
+          // Mis Reservaciones
+          BottomNavigationBarItem(
+            icon: const Icon(Icons.airplane_ticket),
+            activeIcon: const Icon(Icons.airplane_ticket_outlined),
+            label: "Mis reservaciones",
+          ),
+
+          // Perfil
+          BottomNavigationBarItem(
+            icon: const Icon(Icons.person),
+            activeIcon: Icon(Icons.person_2_outlined),
+            label: "Perfil",
+          ),
+
+         ]
+        ),
     );
   }
 }
