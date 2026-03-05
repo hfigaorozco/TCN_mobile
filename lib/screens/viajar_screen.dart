@@ -283,6 +283,9 @@ class _ViajarScreenState extends State<ViajarScreen> {
                 border: InputBorder.none,
                 hintText: "Número de pasajeros",
               ),
+
+              // Guarda el número que escribe el usuario,
+              // lo convierte a entero y actualiza la pantalla
               onChanged: (value) {
                 setState(() {
                   pasajeros = int.tryParse(value) ?? 1;
@@ -297,13 +300,35 @@ class _ViajarScreenState extends State<ViajarScreen> {
 
   // item de navegacion
   Widget _navItem(IconData icon, String label, int index) {
+    // Indica si este ítem está activo
     bool isSelected = _selectedIndex == index;
 
     return GestureDetector(
       onTap: () {
-        setState(() {
-          _selectedIndex = index;
-        });
+
+        if (index == 0) {
+          // Ya estamos en Viajar, no hacemos nada
+          return;
+        }
+
+        if (index == 1) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const ReservacionesScreen(),
+            ),
+          );
+        }
+
+        if (index == 2) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const PerfilScreen(),
+            ),
+          );
+        }
+
       },
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
