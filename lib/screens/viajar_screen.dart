@@ -100,7 +100,7 @@ class _ViajarScreenState extends State<ViajarScreen> {
                   width: double.infinity,
                   height: 55,
                   child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {},//aqui va el path para la pantalla de corridas
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF1F5FBF),
                       shape: RoundedRectangleBorder(
@@ -123,7 +123,7 @@ class _ViajarScreenState extends State<ViajarScreen> {
                   width: double.infinity,
                   height: 55,
                   child: OutlinedButton(
-                    onPressed: () {},
+                    onPressed: () {},//Para poner el path para la pantalla de terminales
                     style: OutlinedButton.styleFrom(
                       side: const BorderSide(color: Colors.orange, width: 2),
                       shape: RoundedRectangleBorder(
