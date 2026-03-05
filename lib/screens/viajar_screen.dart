@@ -315,7 +315,7 @@ class _ViajarScreenState extends State<ViajarScreen> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => const ReservacionesScreen(),
+              builder: (context) =>  ReservacionesScreen(),
             ),
           );
         }
@@ -324,7 +324,7 @@ class _ViajarScreenState extends State<ViajarScreen> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => const PerfilScreen(),
+              builder: (context) =>  PerfilScreen(),
             ),
           );
         }
@@ -384,6 +384,47 @@ class _ViajarScreenState extends State<ViajarScreen> {
       ),
       contentPadding:
           EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+    );
+  }
+
+}
+
+class PerfilScreen extends StatefulWidget {
+  PerfilScreen({Key? key}) : super(key: key);
+
+  @override
+  _PerfilScreenState createState() => _PerfilScreenState();
+}
+
+class _PerfilScreenState extends State<PerfilScreen> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text("Perfil")),
+      body: const Center(
+        child: Text("Pantalla Perfil"),
+      ),
+    );
+  }
+}
+
+class ReservacionesScreen extends StatefulWidget {
+  ReservacionesScreen({Key? key}) : super(key: key);
+
+  @override
+  _ReservacionesScreenState createState() =>
+      _ReservacionesScreenState();
+}
+
+class _ReservacionesScreenState
+    extends State<ReservacionesScreen> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text("Reservaciones")),
+      body: const Center(
+        child: Text("Pantalla Reservaciones"),
+      ),
     );
   }
 }
