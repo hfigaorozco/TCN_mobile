@@ -13,7 +13,7 @@ class _LogInScreenState extends State<LogInScreen> {
     return Scaffold(
       body: Stack(
         children: [
-          // Imagen de fondo (FUERA del scroll)
+          // Imagen de fondo
           Transform.scale(
             scale: 1.5,
             child: Container(
@@ -30,7 +30,7 @@ class _LogInScreenState extends State<LogInScreen> {
             ),
           ),
 
-          // Logo (FUERA del scroll)
+          // Logo
           Positioned(
             top: 50,
             left: 0,
@@ -57,7 +57,7 @@ class _LogInScreenState extends State<LogInScreen> {
             ),
           ),
 
-          // Formulario con scroll
+          // Formulario
           Align(
             alignment: Alignment.bottomCenter,
             child: Container(
@@ -172,7 +172,7 @@ class _LogInScreenState extends State<LogInScreen> {
                     ),
                     const SizedBox(height: 20),
 
-                    // Botón
+                    // Botón para registrarse
                     ElevatedButton(
                       onPressed: () {},
                       style: ElevatedButton.styleFrom(
@@ -191,7 +191,7 @@ class _LogInScreenState extends State<LogInScreen> {
                           fontWeight: FontWeight(600),
                         ),
                       ),
-                    ), // Espacio extra al final
+                    ),
                   ],
                 ),
               ),
