@@ -181,7 +181,7 @@ class _ViajarScreenState extends State<ViajarScreen> {
           const Text(
             "Destino",
             style: TextStyle(
-              color: Colors.orange,
+              color: Colors.deepOrange,
               fontSize: 18,
               fontWeight: FontWeight.bold,
             ),
