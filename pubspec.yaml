@@ -57,7 +57,7 @@ dev_dependencies:
 flutter_launcher_icons:
   android: true
   ios: true
-  image_path: "assets/images/Logo TCN azul.png"
+  image_path: "assets/images/TCN BLUE.jpg"
 # The following section is specific to Flutter packages.
 flutter:
 
