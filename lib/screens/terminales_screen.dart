@@ -185,10 +185,6 @@ class _TerminalesScreenState extends State<TerminalesScreen> {
     return Scaffold(
       backgroundColor: _backgroundGray,
       appBar: AppBar(title: const Text('Tu Cuervo Móvil')),
-      floatingActionButton: FloatingActionButton(
-        onPressed: obtenerUbicacion,
-        child: const Icon(Icons.my_location),
-      ),
 
       body: Padding(
         padding: const EdgeInsets.all(16),
@@ -354,6 +350,34 @@ class _TerminalesScreenState extends State<TerminalesScreen> {
                 ),
               ),
             ),
+
+            const SizedBox(height: 10),
+
+            SizedBox(
+              width: double.infinity,
+              height: 52,
+              child: ElevatedButton.icon(
+                onPressed: obtenerUbicacion,
+                icon: const Icon(Icons.location_pin, size: 20),
+                label: const Text(
+                  'Localizarme',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w600,
+                    letterSpacing: 0.3,
+                  ),
+                ),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.deepOrange,
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  elevation: 2,
+                ),
+              ),
+            ),
+
           ],
         ),
       ),

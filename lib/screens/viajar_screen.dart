@@ -126,14 +126,14 @@ class _ViajarScreenState extends State<ViajarScreen> {
                       );
                     },
                     style: OutlinedButton.styleFrom(
-                      side: const BorderSide(color: Colors.orange, width: 2),
+                      side: const BorderSide(color: Colors.deepOrange, width: 2),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(25),
                       ),
                     ),
                     child: const Text(
                       "Localizar terminal",
-                      style: TextStyle(fontSize: 18, color: Colors.orange),
+                      style: TextStyle(fontSize: 18, color: Colors.deepOrange),
                     ),
                   ),
                 ),
