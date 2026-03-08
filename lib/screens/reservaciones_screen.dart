@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'shared_appbar.dart';
+import 'shared_navbar.dart';
 
 class ReservacionesScreen extends StatefulWidget {
   const ReservacionesScreen({super.key});
@@ -26,61 +28,31 @@ class _ReservacionesScreenState extends State<ReservacionesScreen> {
       ),
       child: Column(
         children: [
-          // Fila superior
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              // Origen
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: const [
-                  Text(
-                    'fecha',
-                    style: TextStyle(fontSize: 12, color: Colors.white70),
-                  ),
+                  Text('fecha', style: TextStyle(fontSize: 12, color: Colors.white70)),
                   Text(
                     'Origen',
-                    style: TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
+                    style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white),
                   ),
-                  Text(
-                    'hora',
-                    style: TextStyle(fontSize: 12, color: Colors.white70),
-                  ),
+                  Text('hora', style: TextStyle(fontSize: 12, color: Colors.white70)),
                 ],
               ),
-
-              // Icono bus
-              const Icon(
-                Icons.directions_bus,
-                color: Colors.white,
-                size: 40,
-              ),
-
-              // Destino
+              const Icon(Icons.directions_bus, color: Colors.white, size: 40),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: const [
-                  Text(
-                    'fecha',
-                    style: TextStyle(fontSize: 12, color: Colors.white70),
-                  ),
+                  Text('fecha', style: TextStyle(fontSize: 12, color: Colors.white70)),
                   Text(
                     'Destino',
-                    style: TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
+                    style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white),
                   ),
-                  Text(
-                    'hora',
-                    style: TextStyle(fontSize: 12, color: Colors.white70),
-                  ),
+                  Text('hora', style: TextStyle(fontSize: 12, color: Colors.white70)),
                 ],
               ),
             ],
@@ -90,54 +62,21 @@ class _ReservacionesScreenState extends State<ReservacionesScreen> {
           const Divider(color: Colors.white38, thickness: 1),
           const SizedBox(height: 8),
 
-          // Fila inferior
           const Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                'Clase',
-                style: TextStyle(fontSize: 12, color: Colors.white70),
-              ),
-              Text(
-                'Autobus',
-                style: TextStyle(fontSize: 12, color: Colors.white70),
-              ),
-              Text(
-                'Pasajeros',
-                style: TextStyle(fontSize: 12, color: Colors.white70),
-              ),
+              Text('Clase', style: TextStyle(fontSize: 12, color: Colors.white70)),
+              Text('Autobus', style: TextStyle(fontSize: 12, color: Colors.white70)),
+              Text('Pasajeros', style: TextStyle(fontSize: 12, color: Colors.white70)),
             ],
           ),
           const SizedBox(height: 4),
-
-          // Fila inferior de valores
           const Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                'Clase',
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-              ),
-              Text(
-                'Autobus',
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-              ),
-              Text(
-                'Pasajero',
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-              ),
+              Text('Clase', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.white)),
+              Text('Autobus', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.white)),
+              Text('Pasajero', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.white)),
             ],
           ),
         ],
@@ -149,31 +88,13 @@ class _ReservacionesScreenState extends State<ReservacionesScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF2F2F7),
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(60),
-        child: AppBar(
-          backgroundColor: Colors.white,
-          elevation: 1,
-          flexibleSpace: SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              child: Image.asset(
-                'assets/images/appbar.png',
-                fit: BoxFit.contain,
-                alignment: Alignment.center,
-              ),
-            ),
-          ),
-        ),
-      ),
-
+      appBar: const SharedAppBar(),
+      bottomNavigationBar: const SharedNavBar(selectedIndex: 1),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-
-            // Título
             Container(
               width: double.infinity,
               padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
@@ -190,31 +111,20 @@ class _ReservacionesScreenState extends State<ReservacionesScreen> {
               ),
               child: const Text(
                 'Tus reservaciones',
-                style: TextStyle(
-                  fontSize: 30,
-                  fontWeight: FontWeight.w900,
-                  color: Colors.black,
-                ),
+                style: TextStyle(fontSize: 30, fontWeight: FontWeight.w900, color: Colors.black),
                 textAlign: TextAlign.center,
               ),
             ),
-            
-            const SizedBox(height: 20),
-
-            _buildReservationCard(),
 
             const SizedBox(height: 20),
-
             _buildReservationCard(),
-
-            const SizedBox(height: 20,),
-
+            const SizedBox(height: 20),
             _buildReservationCard(),
-
+            const SizedBox(height: 20),
+            _buildReservationCard(),
           ],
         ),
       ),
-
     );
   }
 }

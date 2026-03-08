@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'reservaciones_screen.dart';
 import 'perfil_screen.dart';
 import 'terminales_screen.dart';
+import 'shared_navbar.dart';
 
 class ViajarScreen extends StatefulWidget {
   const ViajarScreen({super.key});
@@ -15,8 +16,6 @@ class _ViajarScreenState extends State<ViajarScreen> {
   String? destinoSeleccionado;
   DateTime? fechaSeleccionada;
   int pasajeros = 1;
-
-  final int _selectedIndex = 0;
 
   final List<String> ciudades = [
     "Tijuana",
@@ -35,7 +34,6 @@ class _ViajarScreenState extends State<ViajarScreen> {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              // header del logini
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.symmetric(vertical: 20),
@@ -43,7 +41,6 @@ class _ViajarScreenState extends State<ViajarScreen> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: const [
-                    // aqui poner el logini
                     Text(
                       "TU CUERVO MÓVIL",
                       style: TextStyle(
@@ -72,7 +69,6 @@ class _ViajarScreenState extends State<ViajarScreen> {
 
               const SizedBox(height: 30),
 
-              // Tarjeta de origen y destinos
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: _cardOrigenDestino(),
@@ -80,7 +76,6 @@ class _ViajarScreenState extends State<ViajarScreen> {
 
               const SizedBox(height: 20),
 
-              // Fecha
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: _cardFecha(),
@@ -88,7 +83,6 @@ class _ViajarScreenState extends State<ViajarScreen> {
 
               const SizedBox(height: 15),
 
-              // Pasajeros
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: _cardPasajeros(),
@@ -96,14 +90,13 @@ class _ViajarScreenState extends State<ViajarScreen> {
 
               const SizedBox(height: 30),
 
-              // Boton continuar
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: SizedBox(
                   width: double.infinity,
                   height: 55,
                   child: ElevatedButton(
-                    onPressed: () {},//aqui va el path para la pantalla de corridas
+                    onPressed: () {},
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF1F5FBF),
                       shape: RoundedRectangleBorder(
@@ -129,7 +122,7 @@ class _ViajarScreenState extends State<ViajarScreen> {
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => TerminalesScreen()),
+                        MaterialPageRoute(builder: (context) => const TerminalesScreen()),
                       );
                     },
                     style: OutlinedButton.styleFrom(
@@ -140,8 +133,7 @@ class _ViajarScreenState extends State<ViajarScreen> {
                     ),
                     child: const Text(
                       "Localizar terminal",
-                      style:
-                          TextStyle(fontSize: 18, color: Colors.orange),
+                      style: TextStyle(fontSize: 18, color: Colors.orange),
                     ),
                   ),
                 ),
@@ -153,32 +145,10 @@ class _ViajarScreenState extends State<ViajarScreen> {
         ),
       ),
 
-      // navbar inferior
-      bottomNavigationBar: Container(
-        height: 70,
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black12,
-              blurRadius: 10,
-              offset: Offset(0, -2),
-            )
-          ],
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            _navItem(Icons.directions_bus, "Viajar", 0),
-            _navItem(Icons.work_outline, "Mis reservaciones", 1),
-            _navItem(Icons.person_outline, "Perfil", 2),
-          ],
-        ),
-      ),
+      bottomNavigationBar: const SharedNavBar(selectedIndex: 0),
     );
   }
 
-  // La tarjetade origen y destino
   Widget _cardOrigenDestino() {
     return Container(
       padding: const EdgeInsets.all(16),
@@ -196,12 +166,10 @@ class _ViajarScreenState extends State<ViajarScreen> {
           ),
           const SizedBox(height: 8),
           DropdownButtonFormField<String>(
-            initialValue: origenSeleccionado,
             decoration: _inputDecoration(),
             hint: const Text("Selecciona origen"),
             items: ciudades.map((ciudad) {
-              return DropdownMenuItem(
-                  value: ciudad, child: Text(ciudad));
+              return DropdownMenuItem(value: ciudad, child: Text(ciudad));
             }).toList(),
             onChanged: (value) {
               setState(() {
@@ -220,12 +188,10 @@ class _ViajarScreenState extends State<ViajarScreen> {
           ),
           const SizedBox(height: 8),
           DropdownButtonFormField<String>(
-            initialValue: destinoSeleccionado,
             decoration: _inputDecoration(),
             hint: const Text("Selecciona destino"),
             items: ciudades.map((ciudad) {
-              return DropdownMenuItem(
-                  value: ciudad, child: Text(ciudad));
+              return DropdownMenuItem(value: ciudad, child: Text(ciudad));
             }).toList(),
             onChanged: (value) {
               setState(() {
@@ -238,7 +204,6 @@ class _ViajarScreenState extends State<ViajarScreen> {
     );
   }
 
-  // tarjeta de las fechas
   Widget _cardFecha() {
     return GestureDetector(
       onTap: () async {
@@ -248,7 +213,6 @@ class _ViajarScreenState extends State<ViajarScreen> {
           firstDate: DateTime.now(),
           lastDate: DateTime(2030),
         );
-
         if (picked != null) {
           setState(() {
             fechaSeleccionada = picked;
@@ -274,7 +238,6 @@ class _ViajarScreenState extends State<ViajarScreen> {
     );
   }
 
-  // tarjeta para los pasajeros
   Widget _cardPasajeros() {
     return Container(
       padding: const EdgeInsets.all(16),
@@ -291,9 +254,6 @@ class _ViajarScreenState extends State<ViajarScreen> {
                 border: InputBorder.none,
                 hintText: "Número de pasajeros",
               ),
-
-              // Guarda el número que escribe el usuario,
-              // lo convierte a entero y actualiza la pantalla
               onChanged: (value) {
                 setState(() {
                   pasajeros = int.tryParse(value) ?? 1;
@@ -306,77 +266,12 @@ class _ViajarScreenState extends State<ViajarScreen> {
     );
   }
 
-  // item de navegacion
-  Widget _navItem(IconData icon, String label, int index) {
-    // Indica si este ítem está activo
-    bool isSelected = _selectedIndex == index;
-
-    return GestureDetector(
-      onTap: () {
-
-        if (index == 0) {
-          // Ya estamos en Viajar, no hacemos nada
-          return;
-        }
-
-        if (index == 1) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) =>  ReservacionesScreen(),
-            ),
-          );
-        }
-
-        if (index == 2) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) =>  PerfilScreen(),
-            ),
-          );
-        }
-
-      },
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              color: isSelected
-                  ? const Color(0xFF1F5FBF)
-                  : Colors.transparent,
-              shape: BoxShape.circle,
-            ),
-            child: Icon(
-              icon,
-              color:
-                  isSelected ? Colors.white : const Color(0xFF1F5FBF),
-            ),
-          ),
-          const SizedBox(height: 5),
-          Text(
-            label,
-            style: const TextStyle(
-              color: Color(0xFF1F5FBF),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  // Las decoraciones
   BoxDecoration _boxDecoration() {
     return BoxDecoration(
       color: Colors.white,
       borderRadius: BorderRadius.circular(20),
       boxShadow: const [
-        BoxShadow(
-            color: Colors.black12,
-            blurRadius: 12,
-            offset: Offset(0, 5)),
+        BoxShadow(color: Colors.black12, blurRadius: 12, offset: Offset(0, 5)),
       ],
     );
   }
@@ -387,12 +282,9 @@ class _ViajarScreenState extends State<ViajarScreen> {
       fillColor: Color(0xFFF4F6FB),
       border: OutlineInputBorder(
         borderSide: BorderSide.none,
-        borderRadius:
-            BorderRadius.all(Radius.circular(12)),
+        borderRadius: BorderRadius.all(Radius.circular(12)),
       ),
-      contentPadding:
-          EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 10),
     );
   }
-
 }
