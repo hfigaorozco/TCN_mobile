@@ -3,6 +3,7 @@ import 'reservaciones_screen.dart';
 import 'perfil_screen.dart';
 import 'terminales_screen.dart';
 import 'shared_navbar.dart';
+import 'Corridas_screen.dart';
 
 class ViajarScreen extends StatefulWidget {
   const ViajarScreen({super.key});
@@ -96,7 +97,12 @@ class _ViajarScreenState extends State<ViajarScreen> {
                   width: double.infinity,
                   height: 55,
                   child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const CorridasScreen()),
+                      );
+                    },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF1F5FBF),
                       shape: RoundedRectangleBorder(
