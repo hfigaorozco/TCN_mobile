@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'shared_appbar.dart';
 import 'shared_navbar.dart';
+import 'cambiarcontra_screen.dart';
 
 class PerfilScreen extends StatefulWidget {
   const PerfilScreen({super.key});
@@ -10,7 +11,6 @@ class PerfilScreen extends StatefulWidget {
 }
 
 class _PerfilScreenState extends State<PerfilScreen> {
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -38,7 +38,11 @@ class _PerfilScreenState extends State<PerfilScreen> {
               child: const Text(
                 'Tu Perfil',
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 25, fontWeight: FontWeight.w900, color: Colors.black),
+                style: TextStyle(
+                  fontSize: 25,
+                  fontWeight: FontWeight.w900,
+                  color: Colors.black,
+                ),
               ),
             ),
 
@@ -65,7 +69,10 @@ class _PerfilScreenState extends State<PerfilScreen> {
                     height: 90,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      border: Border.all(color: const Color(0xFF1565C0), width: 3),
+                      border: Border.all(
+                        color: const Color(0xFF1565C0),
+                        width: 3,
+                      ),
                     ),
                     child: const CircleAvatar(
                       backgroundColor: Color(0xFF1565C0),
@@ -89,19 +96,33 @@ class _PerfilScreenState extends State<PerfilScreen> {
 
                   const SizedBox(height: 25),
 
-                  const Text('Usuario:', style: TextStyle(fontSize: 16, color: Colors.grey)),
+                  const Text(
+                    'Usuario:',
+                    style: TextStyle(fontSize: 16, color: Colors.grey),
+                  ),
                   const SizedBox(height: 4),
                   const Text(
                     'Héctor Figueroa',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFF1565C0)),
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF1565C0),
+                    ),
                   ),
                   const SizedBox(height: 20),
 
-                  const Text('Correo:', style: TextStyle(fontSize: 16, color: Colors.grey)),
+                  const Text(
+                    'Correo:',
+                    style: TextStyle(fontSize: 16, color: Colors.grey),
+                  ),
                   const SizedBox(height: 4),
                   const Text(
                     'hfigaorozco@gmail.com',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFF1565C0)),
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF1565C0),
+                    ),
                   ),
                   const SizedBox(height: 28),
 
@@ -109,7 +130,14 @@ class _PerfilScreenState extends State<PerfilScreen> {
                     width: double.infinity,
                     height: 52,
                     child: ElevatedButton(
-                      onPressed: null,
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => CambiarContraScreen(),
+                          ),
+                        );
+                      },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF1565C0),
                         disabledBackgroundColor: const Color(0xFF1565C0),
@@ -121,7 +149,12 @@ class _PerfilScreenState extends State<PerfilScreen> {
                       ),
                       child: const Text(
                         'Cambiar contraseña',
-                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, letterSpacing: 0.3),
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                          letterSpacing: 0.3,
+                          color: Colors.white,
+                        ),
                       ),
                     ),
                   ),
