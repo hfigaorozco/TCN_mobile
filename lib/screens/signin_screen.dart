@@ -163,6 +163,8 @@ class _SignInScreenState extends State<SignInScreen> {
                               ),
                             );
                           },
+
+                          //Link para ir a crear cuenta
                           child: const Text(
                             'Crear cuenta',
                             style: TextStyle(
