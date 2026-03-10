@@ -41,7 +41,7 @@ class _ResumenCompraScreenState extends State<ResumenCompraScreen> {
                 'Resumen',
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  fontWeight: FontWeight(700),
+                  fontWeight: FontWeight.w700,
                   color: Colors.black,
                   fontSize: 26, // reducido de 29 a 26
                 ),
@@ -75,7 +75,7 @@ class _ResumenCompraScreenState extends State<ResumenCompraScreen> {
                         textAlign: TextAlign.start,
                         style: TextStyle(
                           fontSize: 24, // reducido de 29 a 24
-                          fontWeight: FontWeight(600),
+                          fontWeight: FontWeight.w600,
                           color: Colors.black,
                         ),
                       ),
@@ -87,7 +87,7 @@ class _ResumenCompraScreenState extends State<ResumenCompraScreen> {
                         '\$3000.00 MXN',
                         style: TextStyle(
                           fontSize: 26, // reducido de 31 a 26
-                          fontWeight: FontWeight(700),
+                          fontWeight: FontWeight.w700,
                           color: Color(0xFF0961C6),
                         ),
                       ),
@@ -101,7 +101,7 @@ class _ResumenCompraScreenState extends State<ResumenCompraScreen> {
                             'Ruta',
                             style: TextStyle(
                               fontSize: 17, // reducido de 19 a 17
-                              fontWeight: FontWeight(600),
+                              fontWeight: FontWeight.w600,
                               color: Color(0xFF0961C6),
                             ),
                           ),
@@ -113,7 +113,7 @@ class _ResumenCompraScreenState extends State<ResumenCompraScreen> {
                             'Autobús',
                             style: TextStyle(
                               fontSize: 17, // reducido de 19 a 17
-                              fontWeight: FontWeight(600),
+                              fontWeight: FontWeight.w600,
                               color: Color(0xFF0961C6),
                             ),
                           ),
@@ -194,7 +194,7 @@ class _ResumenCompraScreenState extends State<ResumenCompraScreen> {
                         'Salida',
                         style: TextStyle(
                           fontSize: 17, // reducido de 19 a 17
-                          fontWeight: FontWeight(600),
+                          fontWeight: FontWeight.w600,
                           color: Color(0xFF0961C6),
                         ),
                       ),
@@ -236,7 +236,7 @@ class _ResumenCompraScreenState extends State<ResumenCompraScreen> {
                         'Llegada',
                         style: TextStyle(
                           fontSize: 17, // reducido de 19 a 17
-                          fontWeight: FontWeight(600),
+                          fontWeight: FontWeight.w600,
                           color: Color(0xFF0961C6),
                         ),
                       ),
@@ -280,7 +280,7 @@ class _ResumenCompraScreenState extends State<ResumenCompraScreen> {
                             'Servicio',
                             style: TextStyle(
                               fontSize: 17, // reducido de 19 a 17
-                              fontWeight: FontWeight(600),
+                              fontWeight: FontWeight.w600,
                               color: Color(0xFF0961C6),
                             ),
                           ),
@@ -292,7 +292,7 @@ class _ResumenCompraScreenState extends State<ResumenCompraScreen> {
                             'Asientos',
                             style: TextStyle(
                               fontSize: 17, // reducido de 19 a 17
-                              fontWeight: FontWeight(600),
+                              fontWeight: FontWeight.w600,
                               color: Color(0xFF0961C6),
                             ),
                           ),
@@ -384,7 +384,7 @@ class _ResumenCompraScreenState extends State<ResumenCompraScreen> {
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 20, // reducido de 24 a 20
-                          fontWeight: FontWeight(600),
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
                     ),
