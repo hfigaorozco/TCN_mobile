@@ -71,7 +71,7 @@ class _SignInScreenState extends State<SignInScreen> {
                           'Bienvenido',
                           style: TextStyle(
                             fontSize: 40,
-                            fontWeight: FontWeight(700),
+                            fontWeight: FontWeight.w700,
                             color: Color(0xFF2A2625),
                           ),
                         ),
@@ -85,7 +85,7 @@ class _SignInScreenState extends State<SignInScreen> {
                             style: TextStyle(
                               fontSize: 24,
                               color: Color(0xFF0961C6),
-                              fontWeight: FontWeight(600),
+                              fontWeight: FontWeight.w600,
                             ),
                           ),
                         ),
@@ -112,7 +112,7 @@ class _SignInScreenState extends State<SignInScreen> {
                             style: TextStyle(
                               fontSize: 24,
                               color: Color(0xFFFF8600),
-                              fontWeight: FontWeight(600),
+                              fontWeight: FontWeight.w600,
                             ),
                           ),
                         ),
@@ -145,7 +145,7 @@ class _SignInScreenState extends State<SignInScreen> {
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 24,
-                              fontWeight: FontWeight(600),
+                              fontWeight: FontWeight.w600,
                             ),
                           ),
                         ),
@@ -169,7 +169,7 @@ class _SignInScreenState extends State<SignInScreen> {
                             'Crear cuenta',
                             style: TextStyle(
                               color: Color(0xFFFF8600),
-                              fontWeight: FontWeight(700),
+                              fontWeight: FontWeight.w700,
                               fontSize: 16,
                             ),
                           ),

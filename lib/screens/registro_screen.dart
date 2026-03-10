@@ -85,7 +85,7 @@ class _LogInScreenState extends State<LogInScreen> {
                       'Regístrate',
                       style: TextStyle(
                         fontSize: 40,
-                        fontWeight: FontWeight(700),
+                        fontWeight: FontWeight.w700,
                         color: Color(0xFF2A2625),
                       ),
                     ),
@@ -99,7 +99,7 @@ class _LogInScreenState extends State<LogInScreen> {
                         style: TextStyle(
                           fontSize: 24,
                           color: Color(0xFF0961C6),
-                          fontWeight: FontWeight(600),
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
                     ),
@@ -126,7 +126,7 @@ class _LogInScreenState extends State<LogInScreen> {
                         style: TextStyle(
                           fontSize: 24,
                           color: Color(0xFF0961C6),
-                          fontWeight: FontWeight(600),
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
                     ),
@@ -153,7 +153,7 @@ class _LogInScreenState extends State<LogInScreen> {
                         style: TextStyle(
                           fontSize: 24,
                           color: Color(0xFF0961C6),
-                          fontWeight: FontWeight(600),
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
                     ),
@@ -188,7 +188,7 @@ class _LogInScreenState extends State<LogInScreen> {
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 24,
-                          fontWeight: FontWeight(600),
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
                     ),

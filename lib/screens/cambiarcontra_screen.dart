@@ -34,7 +34,7 @@ class _CambiarContraScreenState extends State<CambiarContraScreen> {
                   'Cambiar contraseña',
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    fontWeight: FontWeight(700),
+                    fontWeight: FontWeight.w700,
                     color: Colors.black,
                     fontSize: 28,
                   ),
@@ -89,7 +89,7 @@ class _CambiarContraScreenState extends State<CambiarContraScreen> {
                         style: TextStyle(
                           fontSize: 24,
                           color: Color(0xFF0961C6),
-                          fontWeight: FontWeight(600),
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
                     ),
@@ -114,7 +114,7 @@ class _CambiarContraScreenState extends State<CambiarContraScreen> {
                         style: TextStyle(
                           fontSize: 24,
                           color: Color(0xFF0961C6),
-                          fontWeight: FontWeight(600),
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
                     ),
@@ -147,7 +147,7 @@ class _CambiarContraScreenState extends State<CambiarContraScreen> {
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 24,
-                          fontWeight: FontWeight(600),
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
                     ),
