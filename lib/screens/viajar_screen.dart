@@ -1,296 +1,321 @@
 import 'package:flutter/material.dart';
-import 'reservaciones_screen.dart';
-import 'perfil_screen.dart';
-import 'terminales_screen.dart';
-import 'shared_navbar.dart';
 import 'Corridas_screen.dart';
+import 'terminales_screen.dart';
+import 'shared_appbar.dart';
+import 'shared_navbar.dart';
 
 class ViajarScreen extends StatefulWidget {
   const ViajarScreen({super.key});
 
   @override
-  _ViajarScreenState createState() => _ViajarScreenState();
+  State<ViajarScreen> createState() => _ViajarScreenState();
 }
 
 class _ViajarScreenState extends State<ViajarScreen> {
-  String? origenSeleccionado;
-  String? destinoSeleccionado;
-  DateTime? fechaSeleccionada;
-  int pasajeros = 1;
+
+  final fechaController = TextEditingController();
+
+  String? _origen;
+  String? _destino;
+  int _cantPasajeros = 1;
 
   final List<String> ciudades = [
-    "Tijuana",
-    "Tecate",
-    "Mexicali",
-    "Rosarito",
-    "San Quintin",
+    'Tijuana',
+    'Ensenada',
+    'Mexicali',
+    'Hermosillo',
+    'Navojoa'
   ];
+
+  DateTime? fechaSeleccionada;
+
+  Future<void> seleccionarFecha(BuildContext context) async {
+
+    final DateTime hoy = DateTime.now();
+    final DateTime limite = hoy.add(const Duration(days: 15));
+
+    final DateTime? fecha = await showDatePicker(
+      context: context,
+      initialDate: fechaSeleccionada ?? hoy,
+      firstDate: hoy,
+      lastDate: limite,
+    );
+
+    if (fecha != null) {
+      setState(() {
+        fechaSeleccionada = fecha;
+        fechaController.text =
+            "${fecha.day}/${fecha.month}/${fecha.year}";
+      });
+    }
+  }
+
+  void aumentarPasajeros() {
+    if (_cantPasajeros < 10) {
+      setState(() {
+        _cantPasajeros++;
+      });
+    }
+  }
+
+  void disminuirPasajeros() {
+    if (_cantPasajeros > 1) {
+      setState(() {
+        _cantPasajeros--;
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    fechaController.dispose();
+    super.dispose();
+  }
+
+  InputDecoration inputDecoracion(String hint, IconData icon) {
+    return InputDecoration(
+      hintText: hint,
+      prefixIcon: Icon(icon),
+      filled: true,
+      fillColor: const Color(0xFFF4F6FB),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: BorderSide.none,
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF4F6FB),
+      backgroundColor: const Color(0xFFF2F2F7),
+
+      appBar: SharedAppBar(),
 
       body: SafeArea(
         child: SingleChildScrollView(
-          child: Column(
-            children: [
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.symmetric(vertical: 20),
-                color: const Color(0xFFE9EEF6),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
-                    Text(
-                      "TU CUERVO MÓVIL",
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xFF2A5CAA),
-                      ),
-                    ),
-                  ],
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              children: [
+
+                const Text(
+                  "¡Viajemos juntos!",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 35,
+                    fontWeight: FontWeight.w900,
+                  ),
                 ),
-              ),
 
-              const SizedBox(height: 30),
+                const SizedBox(height: 10),
 
-              const Text(
-                "¡Viajemos juntos!",
-                style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
-              ),
+                const Text(
+                  "¿Cuál es tu siguiente viaje?",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 17,
+                    color: Colors.black54,
+                  ),
+                ),
 
-              const SizedBox(height: 8),
+                const SizedBox(height: 25),
 
-              const Text(
-                "¿Cual es tu siguiente viaje?",
-                style: TextStyle(fontSize: 16, color: Colors.black54),
-              ),
+                /// CARD PRINCIPAL
+                Card(
+                  color: Colors.white,
+                  elevation: 6,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(18),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      children: [
 
-              const SizedBox(height: 30),
+                        /// ORIGEN
+                        DropdownButtonFormField<String>(
+                          value: _origen,
+                          hint: const Text("Seleccionar origen"),
+                          items: ciudades.map((value) {
+                            return DropdownMenuItem(
+                              value: value,
+                              child: Text(value),
+                            );
+                          }).toList(),
+                          onChanged: (value) {
+                            setState(() {
+                              _origen = value;
+                            });
+                          },
+                          decoration: inputDecoracion(
+                            "Origen",
+                            Icons.location_city,
+                          ),
+                        ),
 
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: _cardOrigenDestino(),
-              ),
+                        const SizedBox(height: 22),
 
-              const SizedBox(height: 20),
+                        /// DESTINO
+                        DropdownButtonFormField<String>(
+                          value: _destino,
+                          hint: const Text("Seleccionar destino"),
+                          items: ciudades.map((value) {
+                            return DropdownMenuItem(
+                              value: value,
+                              child: Text(value),
+                            );
+                          }).toList(),
+                          onChanged: (value) {
+                            setState(() {
+                              _destino = value;
+                            });
+                          },
+                          decoration: inputDecoracion(
+                            "Destino",
+                            Icons.location_on,
+                          ),
+                        ),
 
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: _cardFecha(),
-              ),
+                        const SizedBox(height: 22),
 
-              const SizedBox(height: 15),
+                        /// FECHA
+                        TextField(
+                          controller: fechaController,
+                          readOnly: true,
+                          onTap: () => seleccionarFecha(context),
+                          decoration: inputDecoracion(
+                            "Seleccionar fecha",
+                            Icons.calendar_today,
+                          ),
+                        ),
 
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: _cardPasajeros(),
-              ),
+                        const SizedBox(height: 22),
 
-              const SizedBox(height: 30),
+                        /// PASAJEROS
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
 
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: SizedBox(
-                  width: double.infinity,
-                  height: 55,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => const CorridasScreen()),
-                      );
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF1F5FBF),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(25),
-                      ),
-                    ),
-                    child: const Text(
-                      "Continuar",
-                      style: TextStyle(fontSize: 18, color: Colors.white),
+                            const Text(
+                              "Cantidad de pasajeros",
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 18,
+                              ),
+                            ),
+
+                            Row(
+                              children: [
+
+                                IconButton(
+                                  onPressed: disminuirPasajeros,
+                                  icon: const Icon(Icons.remove_circle_outline),
+                                ),
+
+                                Text(
+                                  "$_cantPasajeros",
+                                  style: const TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+
+                                IconButton(
+                                  onPressed: aumentarPasajeros,
+                                  icon: const Icon(Icons.add_circle_outline),
+                                ),
+
+                              ],
+                            )
+
+                          ],
+                        ),
+
+                      ],
                     ),
                   ),
                 ),
-              ),
 
-              const SizedBox(height: 15),
+                const SizedBox(height: 20),
 
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: SizedBox(
-                  width: double.infinity,
-                  height: 55,
-                  child: OutlinedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => const TerminalesScreen()),
-                      );
-                    },
-                    style: OutlinedButton.styleFrom(
-                      side: const BorderSide(color: Colors.deepOrange, width: 2),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(25),
-                      ),
+                /// BOTON CONTINUAR
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF1565C0),
+                    foregroundColor: Colors.white,
+                    minimumSize: const Size(double.infinity, 55),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(22),
                     ),
-                    child: const Text(
-                      "Localizar terminal",
-                      style: TextStyle(fontSize: 18, color: Colors.deepOrange),
+                  ),
+                  onPressed: () {
+
+                    if (_origen == null || _destino == null || fechaSeleccionada == null) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text("Completa todos los campos"),
+                        ),
+                      );
+                      return;
+                    }
+
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => CorridasScreen(),
+                      ),
+                    );
+                  },
+                  child: const Text(
+                    "Buscar corridas",
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
-              ),
 
-              const SizedBox(height: 30),
-            ],
+                const SizedBox(height: 15),
+
+                /// BOTON TERMINALES
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFFF2F2F7),
+                    foregroundColor: Colors.deepOrange,
+                    minimumSize: const Size(double.infinity, 55),
+                    side: const BorderSide(
+                      color: Colors.deepOrange,
+                      width: 2,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(22),
+                    ),
+                  ),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => TerminalesScreen(),
+                      ),
+                    );
+                  },
+                  child: const Text(
+                    "Localizar terminal",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18
+                    ),
+                  ),
+                ),
+
+              ],
+            ),
           ),
         ),
       ),
 
-      bottomNavigationBar: const SharedNavBar(selectedIndex: 0),
-    );
-  }
-
-  Widget _cardOrigenDestino() {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: _boxDecoration(),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            "Origen",
-            style: TextStyle(
-              color: Color(0xFF2A5CAA),
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(height: 8),
-          DropdownButtonFormField<String>(
-            decoration: _inputDecoration(),
-            hint: const Text("Selecciona origen"),
-            items: ciudades.map((ciudad) {
-              return DropdownMenuItem(value: ciudad, child: Text(ciudad));
-            }).toList(),
-            onChanged: (value) {
-              setState(() {
-                origenSeleccionado = value;
-              });
-            },
-          ),
-          const SizedBox(height: 20),
-          const Text(
-            "Destino",
-            style: TextStyle(
-              color: Colors.deepOrange,
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(height: 8),
-          DropdownButtonFormField<String>(
-            decoration: _inputDecoration(),
-            hint: const Text("Selecciona destino"),
-            items: ciudades.map((ciudad) {
-              return DropdownMenuItem(value: ciudad, child: Text(ciudad));
-            }).toList(),
-            onChanged: (value) {
-              setState(() {
-                destinoSeleccionado = value;
-              });
-            },
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _cardFecha() {
-    return GestureDetector(
-      onTap: () async {
-        DateTime? picked = await showDatePicker(
-          context: context,
-          initialDate: DateTime.now(),
-          firstDate: DateTime.now(),
-          lastDate: DateTime(2030),
-        );
-        if (picked != null) {
-          setState(() {
-            fechaSeleccionada = picked;
-          });
-        }
-      },
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: _boxDecoration(),
-        child: Row(
-          children: [
-            const Icon(Icons.calendar_today, color: Colors.grey),
-            const SizedBox(width: 10),
-            Text(
-              fechaSeleccionada == null
-                  ? "Seleccionar fecha"
-                  : "${fechaSeleccionada!.day}/${fechaSeleccionada!.month}/${fechaSeleccionada!.year}",
-              style: const TextStyle(fontSize: 16),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _cardPasajeros() {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: _boxDecoration(),
-      child: Row(
-        children: [
-          const Icon(Icons.person, color: Colors.grey),
-          const SizedBox(width: 10),
-          Expanded(
-            child: TextFormField(
-              initialValue: pasajeros.toString(),
-              keyboardType: TextInputType.number,
-              decoration: const InputDecoration(
-                border: InputBorder.none,
-                hintText: "Número de pasajeros",
-              ),
-              onChanged: (value) {
-                setState(() {
-                  pasajeros = int.tryParse(value) ?? 1;
-                });
-              },
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  BoxDecoration _boxDecoration() {
-    return BoxDecoration(
-      color: Colors.white,
-      borderRadius: BorderRadius.circular(20),
-      boxShadow: const [
-        BoxShadow(color: Colors.black12, blurRadius: 12, offset: Offset(0, 5)),
-      ],
-    );
-  }
-
-  InputDecoration _inputDecoration() {
-    return const InputDecoration(
-      filled: true,
-      fillColor: Color(0xFFF4F6FB),
-      border: OutlineInputBorder(
-        borderSide: BorderSide.none,
-        borderRadius: BorderRadius.all(Radius.circular(12)),
-      ),
-      contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      bottomNavigationBar: SharedNavBar(selectedIndex: 0),
     );
   }
 }

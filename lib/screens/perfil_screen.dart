@@ -15,12 +15,14 @@ class _PerfilScreenState extends State<PerfilScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF2F2F7),
+
       appBar: const SharedAppBar(),
-      bottomNavigationBar: const SharedNavBar(selectedIndex: 2),
+      
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
+
             Container(
               width: double.infinity,
               padding: const EdgeInsets.symmetric(vertical: 16),
@@ -161,9 +163,13 @@ class _PerfilScreenState extends State<PerfilScreen> {
                 ],
               ),
             ),
+            
           ],
         ),
       ),
+
+      bottomNavigationBar: const SharedNavBar(selectedIndex: 2),
+      
     );
   }
 }

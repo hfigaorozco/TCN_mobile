@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'shared_appbar.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
@@ -184,7 +185,7 @@ class _TerminalesScreenState extends State<TerminalesScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: _backgroundGray,
-      appBar: AppBar(title: const Text('Tu Cuervo Móvil')),
+      appBar: const SharedAppBar(),
 
       body: Padding(
         padding: const EdgeInsets.all(16),
