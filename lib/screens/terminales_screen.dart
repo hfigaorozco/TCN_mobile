@@ -185,6 +185,7 @@ class _TerminalesScreenState extends State<TerminalesScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: _backgroundGray,
+
       appBar: const SharedAppBar(),
 
       body: Padding(
@@ -194,7 +195,7 @@ class _TerminalesScreenState extends State<TerminalesScreen> {
           children: [
             Container(
               width: double.infinity,
-              padding: const EdgeInsets.all(20),
+              padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(14),
@@ -212,17 +213,17 @@ class _TerminalesScreenState extends State<TerminalesScreen> {
                   const Text(
                     'Localiza tu terminal',
                     style: TextStyle(
-                      fontSize: 22,
+                      fontSize: 20,
                       fontWeight: FontWeight.bold,
                       color: Colors.black87,
                     ),
                     textAlign: TextAlign.center,
                   ),
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 7),
                   Text(
                     'Selecciona tu localidad actual o permítenos acceder a tu ubicación para mostrar la terminal de TCN más cercana a ti.',
                     style: TextStyle(
-                      fontSize: 13.5,
+                      fontSize: 11.5,
                       color: Colors.grey.shade600,
                       height: 1.5,
                     ),
@@ -232,12 +233,12 @@ class _TerminalesScreenState extends State<TerminalesScreen> {
               ),
             ),
 
-            const SizedBox(height: 24),
+            const SizedBox(height: 14),
 
             const Text(
               'Ciudad:',
               style: TextStyle(
-                fontSize: 18,
+                fontSize: 15,
                 fontWeight: FontWeight.w800,
                 color: _primaryBlue,
               ),
