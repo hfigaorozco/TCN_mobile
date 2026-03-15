@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'screens/viajar_screen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'screens/login_screen.dart';
 
 Future<void> main() async {
   await Supabase.initialize(
@@ -19,7 +18,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Material App',
-      home: LogInScreen(),
+      home: ViajarScreen(),
     );
   }
 }

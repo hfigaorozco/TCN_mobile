@@ -4,27 +4,79 @@ import 'login_screen.dart';
 
 final supabase = Supabase.instance.client;
 
-class LogInScreen extends StatefulWidget {
-  const LogInScreen({super.key});
+class RegistroScreen extends StatefulWidget {
+  const RegistroScreen({super.key});
 
   @override
-  State<LogInScreen> createState() => _LogInScreenState();
+  State<RegistroScreen> createState() => _RegistroScreenState();
 }
 
-class _LogInScreenState extends State<LogInScreen> {
+class _RegistroScreenState extends State<RegistroScreen> {
   final nombreController = TextEditingController();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
   Future<void> register() async {
-    try {
-      await supabase.auth.signUp(
-        email: emailController.text,
-        password: passwordController.text,
+    if (nombreController.text.length < 3) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('El nombre debe tener al menos 3 caracteres'),
+        ),
       );
+      return;
+    }
+
+    if (!emailController.text.contains('@') ||
+        emailController.text.contains(' ')) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Correo electrónico inválido')),
+      );
+      return;
+    }
+
+    if (passwordController.text.length < 6) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('La contraseña debe tener al menos 6 caracteres'),
+        ),
+      );
+      return;
+    }
+
+    if (emailController.text.isEmpty ||
+        nombreController.text.isEmpty ||
+        passwordController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Todos los campos deben ser llenados',
+            style: TextStyle(color: Color(0xFF0961C6)),
+          ),
+        ),
+      );
+    } else {
+      try {
+        await supabase.auth.signUp(
+          email: emailController.text,
+          password: passwordController.text,
+          data: {'name': nombreController.text},
+        );
+      } on AuthException catch (e) {
+        if (e.message.contains('already registered')) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Una cuenta ya existe con este correo'),
+            ),
+          );
+          return;
+        }
+      }
+
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('¡Registro exitoso!')));
+
       Navigator.pop(context);
-    } catch (e) {
-      print(e);
     }
   }
 
@@ -198,25 +250,7 @@ class _LogInScreenState extends State<LogInScreen> {
 
                     // Botón para registrarse
                     ElevatedButton(
-                      onPressed: () {
-                        register;
-
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text(
-                              '¡Registro exitoso!',
-                              style: TextStyle(color: Color(0xFF0961C6)),
-                            ),
-                          ),
-                        );
-
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => LogInScreen(),
-                          ),
-                        );
-                      },
+                      onPressed: register,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF0961C6),
                         minimumSize: const Size(double.infinity, 54),

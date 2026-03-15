@@ -18,17 +18,36 @@ class _LoginScreenState extends State<LogInScreen> {
   final passwordController = TextEditingController();
 
   Future<void> login() async {
-    try {
-      await supabase.auth.signInWithPassword(
-        email: emailController.text,
-        password: passwordController.text,
+    if (emailController.text.isEmpty || emailController.text.contains(' ')) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'El correo electrónico no puede estar vacío ni contener espacios',
+          ),
+        ),
       );
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (_) => ViajarScreen()),
-      );
-    } catch (e) {
-      print(e);
+      return;
+    } else {
+      try {
+        await supabase.auth.signInWithPassword(
+          email: emailController.text,
+          password: passwordController.text,
+        );
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => ViajarScreen()),
+        );
+      } on AuthException catch (e) {
+        if (e.message.contains('Invalid login credentials')) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('La contraseña o correo son incorrectos'),
+            ),
+          );
+          return;
+        }
+        ;
+      }
     }
   }
 
@@ -141,6 +160,7 @@ class _LoginScreenState extends State<LogInScreen> {
                           ),
                         ),
                         TextField(
+                          obscureText: true,
                           controller: passwordController,
                           decoration: InputDecoration(
                             labelText: 'Ingresa tu contraseña',
@@ -184,7 +204,7 @@ class _LoginScreenState extends State<LogInScreen> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => LogInScreen(),
+                                builder: (context) => RegistroScreen(),
                               ),
                             );
                           },
