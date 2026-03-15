@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tcn/screens/shared_navbar.dart';
 import 'shared_appbar.dart';
-import 'shared_navbar.dart';
 
 class ResumenCompraScreen extends StatefulWidget {
   const ResumenCompraScreen({super.key});
