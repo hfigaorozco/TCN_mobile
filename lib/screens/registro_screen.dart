@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'login_screen.dart';
+
+final supabase = Supabase.instance.client;
 
 class LogInScreen extends StatefulWidget {
   const LogInScreen({super.key});
@@ -8,6 +12,22 @@ class LogInScreen extends StatefulWidget {
 }
 
 class _LogInScreenState extends State<LogInScreen> {
+  final nombreController = TextEditingController();
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
+
+  Future<void> register() async {
+    try {
+      await supabase.auth.signUp(
+        email: emailController.text,
+        password: passwordController.text,
+      );
+      Navigator.pop(context);
+    } catch (e) {
+      print(e);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -104,6 +124,7 @@ class _LogInScreenState extends State<LogInScreen> {
                       ),
                     ),
                     TextField(
+                      controller: nombreController,
                       decoration: InputDecoration(
                         labelText: 'Ingresa tus nombres',
                         border: OutlineInputBorder(
@@ -131,6 +152,7 @@ class _LogInScreenState extends State<LogInScreen> {
                       ),
                     ),
                     TextField(
+                      controller: emailController,
                       decoration: InputDecoration(
                         labelText: 'Ingresa tu correo electrónico',
                         border: OutlineInputBorder(
@@ -158,6 +180,8 @@ class _LogInScreenState extends State<LogInScreen> {
                       ),
                     ),
                     TextField(
+                      controller: passwordController,
+                      obscureText: true,
                       decoration: InputDecoration(
                         labelText: 'Ingresa una contraseña',
                         border: OutlineInputBorder(
@@ -174,7 +198,25 @@ class _LogInScreenState extends State<LogInScreen> {
 
                     // Botón para registrarse
                     ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        register;
+
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text(
+                              '¡Registro exitoso!',
+                              style: TextStyle(color: Color(0xFF0961C6)),
+                            ),
+                          ),
+                        );
+
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => LogInScreen(),
+                          ),
+                        );
+                      },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF0961C6),
                         minimumSize: const Size(double.infinity, 54),
