@@ -1,14 +1,55 @@
 import 'package:flutter/material.dart';
 import 'registro_screen.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'viajar_screen.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
-class SignInScreen extends StatefulWidget {
-  const SignInScreen({super.key});
+final supabase = Supabase.instance.client;
+
+class LogInScreen extends StatefulWidget {
+  const LogInScreen({super.key});
 
   @override
-  State<SignInScreen> createState() => _SignInScreenState();
+  State<LogInScreen> createState() => _LoginScreenState();
 }
 
-class _SignInScreenState extends State<SignInScreen> {
+class _LoginScreenState extends State<LogInScreen> {
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
+
+  Future<void> login() async {
+    if (emailController.text.isEmpty || emailController.text.contains(' ')) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'El correo electrónico no puede estar vacío ni contener espacios',
+          ),
+        ),
+      );
+      return;
+    } else {
+      try {
+        await supabase.auth.signInWithPassword(
+          email: emailController.text,
+          password: passwordController.text,
+        );
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => ViajarScreen()),
+        );
+      } on AuthException catch (e) {
+        if (e.message.contains('Invalid login credentials')) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('La contraseña o correo son incorrectos'),
+            ),
+          );
+          return;
+        }
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -90,6 +131,7 @@ class _SignInScreenState extends State<SignInScreen> {
                           ),
                         ),
                         TextField(
+                          controller: emailController,
                           decoration: InputDecoration(
                             labelText: 'Ingresa tu correo electrónico',
                             border: OutlineInputBorder(
@@ -117,6 +159,8 @@ class _SignInScreenState extends State<SignInScreen> {
                           ),
                         ),
                         TextField(
+                          obscureText: true,
+                          controller: passwordController,
                           decoration: InputDecoration(
                             labelText: 'Ingresa tu contraseña',
                             border: OutlineInputBorder(
@@ -131,7 +175,7 @@ class _SignInScreenState extends State<SignInScreen> {
                         ),
                         const SizedBox(height: 19),
                         ElevatedButton(
-                          onPressed: () {},
+                          onPressed: login,
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Color(0xFF0961C6),
                             minimumSize: const Size(double.infinity, 54),
@@ -159,7 +203,7 @@ class _SignInScreenState extends State<SignInScreen> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => LogInScreen(),
+                                builder: (context) => RegistroScreen(),
                               ),
                             );
                           },

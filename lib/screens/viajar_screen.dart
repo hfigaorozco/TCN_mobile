@@ -135,7 +135,7 @@ class _ViajarScreenState extends State<ViajarScreen> {
 
                         /// ORIGEN
                         DropdownButtonFormField<String>(
-                          value: _origen,
+                          initialValue: _origen,
                           hint: const Text("Seleccionar origen"),
                           items: ciudades.map((value) {
                             return DropdownMenuItem(
@@ -158,7 +158,7 @@ class _ViajarScreenState extends State<ViajarScreen> {
 
                         /// DESTINO
                         DropdownButtonFormField<String>(
-                          value: _destino,
+                          initialValue: _destino,
                           hint: const Text("Seleccionar destino"),
                           items: ciudades.map((value) {
                             return DropdownMenuItem(

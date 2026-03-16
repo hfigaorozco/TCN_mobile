@@ -3,7 +3,7 @@ import 'asientosplat_screen.dart';
 import 'asientosplus_screen.dart';
 
 class CorridasScreen extends StatefulWidget {
-  const CorridasScreen({Key? key}) : super(key: key);
+  const CorridasScreen({super.key});
 
   @override
   _CorridasScreenState createState() => _CorridasScreenState();
