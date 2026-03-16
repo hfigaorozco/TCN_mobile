@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tcn/screens/shared_appbar.dart';
 import 'asientosplat_screen.dart';
 import 'asientosplus_screen.dart';
 
@@ -16,31 +17,11 @@ class _CorridasScreenState extends State<CorridasScreen> {
     return Scaffold(
       backgroundColor: const Color(0xFFF4F6FB),
 
+      appBar: const SharedAppBar(),
+
       body: SafeArea(
         child: Column(
           children: [
-
-            // header del logo
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(vertical: 20),
-              color: const Color(0xFFE9EEF6),
-              child: const Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    "TU CUERVO MÓVIL",
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFF2A5CAA),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-
-            const SizedBox(height: 20),
 
             // tarjeta de busqueda
             Padding(
