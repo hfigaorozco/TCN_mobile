@@ -1,7 +1,12 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'shared_appbar.dart';
 import 'shared_navbar.dart';
 import 'cambiarcontra_screen.dart';
+import 'login_screen.dart';
 
 class PerfilScreen extends StatefulWidget {
   const PerfilScreen({super.key});
@@ -11,13 +16,120 @@ class PerfilScreen extends StatefulWidget {
 }
 
 class _PerfilScreenState extends State<PerfilScreen> {
+
+  final supabase = Supabase.instance.client;
+  String? _fotoPath;
+  bool _cargandoFoto = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _cargarFotoLocal();
+  }
+
+  Future<void> _cargarFotoLocal() async {
+    final prefs = await SharedPreferences.getInstance();
+    final path = prefs.getString('avatar_path');
+    if (path != null && File(path).existsSync()) {
+      setState(() {
+        _fotoPath = path;
+      });
+    }
+  }
+
+  Future<void> _seleccionarFoto(ImageSource source) async {
+    final picker = ImagePicker();
+    final XFile? imagen = await picker.pickImage(
+      source: source,
+      imageQuality: 80,
+      maxWidth: 600,
+    );
+
+    if (imagen == null) return;
+
+    setState(() => _cargandoFoto = true);
+
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('avatar_path', imagen.path);
+      setState(() {
+        _fotoPath = imagen.path;
+      });
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Error al guardar la foto')),
+        );
+      }
+    } finally {
+      setState(() => _cargandoFoto = false);
+    }
+  }
+
+  void _mostrarOpciones() {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (_) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const SizedBox(height: 8),
+            Container(
+              width: 40,
+              height: 4,
+              decoration: BoxDecoration(
+                color: Colors.grey[300],
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+            const SizedBox(height: 16),
+            ListTile(
+              leading: const Icon(Icons.photo_library_outlined, color: Color(0xFF1565C0)),
+              title: const Text('Elegir de la galería'),
+              onTap: () {
+                Navigator.pop(context);
+                _seleccionarFoto(ImageSource.gallery);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.camera_alt_outlined, color: Color(0xFF1565C0)),
+              title: const Text('Tomar foto'),
+              onTap: () {
+                Navigator.pop(context);
+                _seleccionarFoto(ImageSource.camera);
+              },
+            ),
+            const SizedBox(height: 8),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<void> logout(BuildContext context) async {
+
+    await supabase.auth.signOut();
+
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => LogInScreen()),
+      (route) => false
+    );
+
+  }
+
   @override
   Widget build(BuildContext context) {
+    final user = supabase.auth.currentUser;
+    final nombre = user?.userMetadata?['name'] ?? 'Usuario';
+    final correo = user?.email ?? '';
+
     return Scaffold(
       backgroundColor: const Color(0xFFF2F2F7),
-
       appBar: const SharedAppBar(),
-      
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -25,7 +137,7 @@ class _PerfilScreenState extends State<PerfilScreen> {
 
             Container(
               width: double.infinity,
-              padding: const EdgeInsets.symmetric(vertical: 16),
+              padding: const EdgeInsets.symmetric(vertical: 10),
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(14),
@@ -66,29 +178,70 @@ class _PerfilScreenState extends State<PerfilScreen> {
               ),
               child: Column(
                 children: [
-                  Container(
-                    width: 90,
-                    height: 90,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(
-                        color: const Color(0xFF1565C0),
-                        width: 3,
+
+                  // FOTO DE PERFIL
+                  Stack(
+                    alignment: Alignment.bottomRight,
+                    children: [
+                      Container(
+                        width: 130,
+                        height: 130,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: const Color(0xFF1565C0),
+                            width: 3,
+                          ),
+                        ),
+                        child: ClipOval(
+                          child: _cargandoFoto
+                              ? const Center(
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    color: Color(0xFF1565C0),
+                                  ),
+                                )
+                              : _fotoPath != null
+                                  ? Image.file(
+                                      File(_fotoPath!),
+                                      fit: BoxFit.cover,
+                                    )
+                                  : const ColoredBox(
+                                      color: Color(0xFF1565C0),
+                                      child: Icon(
+                                        Icons.person,
+                                        size: 52,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                        ),
                       ),
-                    ),
-                    child: const CircleAvatar(
-                      backgroundColor: Color(0xFF1565C0),
-                      child: Icon(Icons.person, size: 52, color: Colors.white),
-                    ),
+                      GestureDetector(
+                        onTap: _mostrarOpciones,
+                        child: Container(
+                          padding: const EdgeInsets.all(4),
+                          decoration: const BoxDecoration(
+                            color: Color(0xFF1565C0),
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Icon(
+                            Icons.camera_alt,
+                            size: 16,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
+
                   const SizedBox(height: 10),
 
                   GestureDetector(
-                    onTap: null,
+                    onTap: _mostrarOpciones,
                     child: const Text(
                       'Cambiar foto',
                       style: TextStyle(
-                        fontSize: 13,
+                        fontSize: 15,
                         color: Color(0xFF1565C0),
                         decoration: TextDecoration.underline,
                         decorationColor: Color(0xFF1565C0),
@@ -96,16 +249,16 @@ class _PerfilScreenState extends State<PerfilScreen> {
                     ),
                   ),
 
-                  const SizedBox(height: 25),
+                  const SizedBox(height: 40),
 
                   const Text(
                     'Usuario:',
                     style: TextStyle(fontSize: 16, color: Colors.grey),
                   ),
                   const SizedBox(height: 4),
-                  const Text(
-                    'Héctor Figueroa',
-                    style: TextStyle(
+                  Text(
+                    nombre,
+                    style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                       color: Color(0xFF1565C0),
@@ -118,9 +271,9 @@ class _PerfilScreenState extends State<PerfilScreen> {
                     style: TextStyle(fontSize: 16, color: Colors.grey),
                   ),
                   const SizedBox(height: 4),
-                  const Text(
-                    'hfigaorozco@gmail.com',
-                    style: TextStyle(
+                  Text(
+                    correo,
+                    style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                       color: Color(0xFF1565C0),
@@ -160,16 +313,43 @@ class _PerfilScreenState extends State<PerfilScreen> {
                       ),
                     ),
                   ),
+
+                  const SizedBox(height: 16),
+
+                  SizedBox(
+                    width: double.infinity,
+                    height: 52,
+                    child: ElevatedButton(
+                      onPressed: () => logout(context),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.deepOrange,
+                        disabledForegroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                        elevation: 2,
+                      ),
+                      child: const Text(
+                        'Cerrar sesión',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                          letterSpacing: 0.3,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+
+
                 ],
               ),
             ),
-            
+
           ],
         ),
       ),
-
       bottomNavigationBar: const SharedNavBar(selectedIndex: 2),
-      
     );
   }
 }

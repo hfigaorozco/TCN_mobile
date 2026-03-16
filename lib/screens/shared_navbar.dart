@@ -1,8 +1,11 @@
-// shared_navbar.dart
+// shared navbar
+
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'viajar_screen.dart';
 import 'reservaciones_screen.dart';
 import 'perfil_screen.dart';
+import 'login_screen.dart';
 
 class SharedNavBar extends StatelessWidget {
   final int selectedIndex;
@@ -51,10 +54,18 @@ class SharedNavBar extends StatelessWidget {
           );
         }
         if (index == 2) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (_) => const PerfilScreen()),
-          );
+          final session = Supabase.instance.client.auth.currentSession;
+          if (session != null) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const PerfilScreen()),
+            );
+          } else {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const LogInScreen()),
+            );
+          }
         }
       },
       child: Column(
