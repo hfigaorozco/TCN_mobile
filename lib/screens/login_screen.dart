@@ -114,7 +114,8 @@ class _LoginScreenState extends State<LogInScreen> {
                         color: Color(0xFF2A2625),
                       ),
                     ),
-                    const SizedBox(height: 0),
+
+                    const SizedBox(height: 20),
 
                     // Input para email
                     const Align(
@@ -122,12 +123,15 @@ class _LoginScreenState extends State<LogInScreen> {
                       child: Text(
                         'Correo electrónico:',
                         style: TextStyle(
-                          fontSize: 24,
+                          fontSize: 18,
                           color: Color(0xFF0961C6),
                           fontWeight: FontWeight.w600,
                         ),
                       ),
                     ),
+
+                    const SizedBox(height: 10),
+
                     TextField(
                       controller: emailController,
                       decoration: InputDecoration(
@@ -150,12 +154,15 @@ class _LoginScreenState extends State<LogInScreen> {
                       child: Text(
                         'Contraseña:',
                         style: TextStyle(
-                          fontSize: 24,
+                          fontSize: 18,
                           color: Color(0xFFFF8600),
                           fontWeight: FontWeight.w600,
                         ),
                       ),
                     ),
+
+                    const SizedBox(height: 10),
+
                     TextField(
                       obscureText: true,
                       controller: passwordController,
@@ -171,7 +178,8 @@ class _LoginScreenState extends State<LogInScreen> {
                         prefixIcon: const Icon(Icons.key_outlined),
                       ),
                     ),
-                    const SizedBox(height: 19),
+
+                    const SizedBox(height: 25),
 
                     ElevatedButton(
                       onPressed: login,
@@ -192,11 +200,14 @@ class _LoginScreenState extends State<LogInScreen> {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 14),
+
+                    const SizedBox(height: 15),
+
                     const Text(
                       '¿No tienes cuenta?',
                       style: TextStyle(fontSize: 16),
                     ),
+
                     TextButton(
                       onPressed: () {
                         Navigator.push(
@@ -211,7 +222,7 @@ class _LoginScreenState extends State<LogInScreen> {
                         style: TextStyle(
                           color: Color(0xFFFF8600),
                           fontWeight: FontWeight.w700,
-                          fontSize: 16,
+                          fontSize: 18,
                         ),
                       ),
                     ),

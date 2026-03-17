@@ -23,6 +23,8 @@ class _CorridasScreenState extends State<CorridasScreen> {
         child: Column(
           children: [
 
+            const SizedBox(height: 20),
+
             // tarjeta de busqueda
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),

@@ -38,8 +38,8 @@ class _AsientosPlusPlusState extends State<AsientosPlusPlus> {
       },
 
       child: Container(
-        width: 34,
-        height: 34,
+        width: 40,
+        height: 40,
         decoration: BoxDecoration(
           color: color,
           shape: BoxShape.circle,
@@ -49,7 +49,7 @@ class _AsientosPlusPlusState extends State<AsientosPlusPlus> {
         child: Text(
           "$numero",
           style: const TextStyle(
-            fontSize: 11,
+            fontSize: 15,
             color: Colors.white,
             fontWeight: FontWeight.bold,
           ),
@@ -68,14 +68,14 @@ class _AsientosPlusPlusState extends State<AsientosPlusPlus> {
         children: [
 
           asiento(a),
-          const SizedBox(width:10),
+          const SizedBox(width:5),
 
           asiento(b),
 
-          const SizedBox(width:50),
+          const SizedBox(width:85),
 
           asiento(c),
-          const SizedBox(width:10),
+          const SizedBox(width:5),
 
           asiento(d),
 
@@ -83,6 +83,21 @@ class _AsientosPlusPlusState extends State<AsientosPlusPlus> {
       ),
     );
   }
+
+  Widget filaDos(int a, int b) {
+  return Padding(
+    padding: const EdgeInsets.symmetric(vertical: 10),
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        asiento(a),
+        const SizedBox(width: 5),
+        asiento(b),
+        const SizedBox(width: 85 + 5 + 40 + 40), 
+      ],
+    ),
+  );
+}
 
   @override
   Widget build(BuildContext context) {
@@ -275,8 +290,10 @@ class _AsientosPlusPlusState extends State<AsientosPlusPlus> {
 
             /// ASIENTOS
             Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
+
+                const SizedBox(height: 140),
 
                 fila(1,2,3,4),
                 fila(5,6,7,8),
@@ -288,6 +305,8 @@ class _AsientosPlusPlusState extends State<AsientosPlusPlus> {
                 fila(29,30,31,32),
                 fila(33,34,35,36),
                 fila(37,38,39,40),
+                filaDos(41, 42),
+                filaDos(43, 44),
 
               ],
             ),

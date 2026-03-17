@@ -16,12 +16,13 @@ class SharedAppBar extends StatelessWidget implements PreferredSizeWidget {
           bottomRight: Radius.circular(28),
         ),
         child: AppBar(
+          iconTheme: const IconThemeData(color: Colors.white),
           backgroundColor: const Color(0xFF1060C3),
           elevation: 4,
           shadowColor: Colors.black38,
           flexibleSpace: SafeArea(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
               child: Image.asset(
                 'assets/images/appbar.png',
                 fit: BoxFit.contain,

@@ -40,7 +40,7 @@ class _BoletoScreenState extends State<BoletoScreen> {
                       ),
                     ),
                     Text(
-                      '181',
+                      '001',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 14,
@@ -56,7 +56,7 @@ class _BoletoScreenState extends State<BoletoScreen> {
                       ),
                     ),
                     Text(
-                      '290',
+                      '1001',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 14,
@@ -214,7 +214,7 @@ class _BoletoScreenState extends State<BoletoScreen> {
                     ),
                   ),
                   Text(
-                    'Dalila Gámez Valenzuela',
+                    'Hector Armando Figueroa',
                     style: TextStyle(
                       fontWeight: FontWeight.normal,
                       fontSize: 18,

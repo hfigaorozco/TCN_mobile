@@ -152,6 +152,7 @@ class _RegistroScreenState extends State<RegistroScreen> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
+
                     const Text(
                       'Regístrate',
                       style: TextStyle(
@@ -160,7 +161,8 @@ class _RegistroScreenState extends State<RegistroScreen> {
                         color: Color(0xFF2A2625),
                       ),
                     ),
-                    const SizedBox(height: 0),
+
+                    const SizedBox(height: 20),
 
                     // Nombres
                     const Align(
@@ -168,12 +170,15 @@ class _RegistroScreenState extends State<RegistroScreen> {
                       child: Text(
                         'Nombres:',
                         style: TextStyle(
-                          fontSize: 24,
+                          fontSize: 18,
                           color: Color(0xFF0961C6),
                           fontWeight: FontWeight.w600,
                         ),
                       ),
                     ),
+
+                    const SizedBox(height: 8),
+
                     TextField(
                       controller: nombreController,
                       decoration: InputDecoration(
@@ -188,6 +193,7 @@ class _RegistroScreenState extends State<RegistroScreen> {
                         prefixIcon: const Icon(Icons.person_outlined),
                       ),
                     ),
+
                     const SizedBox(height: 15),
 
                     // Correo
@@ -196,12 +202,15 @@ class _RegistroScreenState extends State<RegistroScreen> {
                       child: Text(
                         'Correo electrónico:',
                         style: TextStyle(
-                          fontSize: 24,
+                          fontSize: 18,
                           color: Color(0xFF0961C6),
                           fontWeight: FontWeight.w600,
                         ),
                       ),
                     ),
+
+                    const SizedBox(height: 8),
+
                     TextField(
                       controller: emailController,
                       decoration: InputDecoration(
@@ -216,6 +225,7 @@ class _RegistroScreenState extends State<RegistroScreen> {
                         prefixIcon: const Icon(Icons.mail_outline),
                       ),
                     ),
+
                     const SizedBox(height: 15),
 
                     // Contraseña
@@ -224,12 +234,15 @@ class _RegistroScreenState extends State<RegistroScreen> {
                       child: Text(
                         'Contraseña:',
                         style: TextStyle(
-                          fontSize: 24,
+                          fontSize: 18,
                           color: Color(0xFF0961C6),
                           fontWeight: FontWeight.w600,
                         ),
                       ),
                     ),
+
+                    const SizedBox(height: 8),
+
                     TextField(
                       controller: passwordController,
                       obscureText: true,
@@ -245,6 +258,7 @@ class _RegistroScreenState extends State<RegistroScreen> {
                         prefixIcon: const Icon(Icons.key_outlined),
                       ),
                     ),
+                    
                     const SizedBox(height: 20),
 
                     // Botón para registrarse

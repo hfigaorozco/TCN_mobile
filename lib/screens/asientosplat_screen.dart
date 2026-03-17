@@ -38,8 +38,8 @@ class _AsientosPlatPlusState extends State<AsientosPlatPlus> {
       },
 
       child: Container(
-        width: 34,
-        height: 34,
+        width: 40,
+        height: 40,
         decoration: BoxDecoration(
           color: color,
           shape: BoxShape.circle,
@@ -49,7 +49,7 @@ class _AsientosPlatPlusState extends State<AsientosPlatPlus> {
         child: Text(
           "$numero",
           style: const TextStyle(
-            fontSize: 11,
+            fontSize: 15,
             color: Colors.white,
             fontWeight: FontWeight.bold,
           ),
@@ -72,7 +72,7 @@ class _AsientosPlatPlusState extends State<AsientosPlatPlus> {
 
           asiento(b),
 
-          const SizedBox(width:50),
+          const SizedBox(width:85),
 
           asiento(c),
           const SizedBox(width:10),
