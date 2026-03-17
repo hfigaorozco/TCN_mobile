@@ -279,11 +279,11 @@ class ListaPasajeros extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 16),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.deepOrange,
+        color: Color(0xFFFF8600),
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.deepOrange.withOpacity(0.35),
+            color: Color(0xFFFF8600).withOpacity(0.35),
             blurRadius: 8,
             offset: const Offset(0, 4),
           ),

@@ -322,7 +322,7 @@ class _PerfilScreenState extends State<PerfilScreen> {
                     child: ElevatedButton(
                       onPressed: () => logout(context),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.deepOrange,
+                        backgroundColor: Color(0xFFFF8600),
                         disabledForegroundColor: Colors.white,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30),

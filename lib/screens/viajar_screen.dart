@@ -282,10 +282,10 @@ class _ViajarScreenState extends State<ViajarScreen> {
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFFF2F2F7),
-                    foregroundColor: Colors.deepOrange,
+                    foregroundColor: Color(0xFFFF8600),
                     minimumSize: const Size(double.infinity, 55),
                     side: const BorderSide(
-                      color: Colors.deepOrange,
+                      color: Color(0xFFFF8600),
                       width: 2,
                     ),
                     shape: RoundedRectangleBorder(
