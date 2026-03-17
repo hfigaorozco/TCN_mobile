@@ -15,7 +15,6 @@ class _BoletoScreenState extends State<BoletoScreen> {
     return Scaffold(
       backgroundColor: const Color(0xFFF2F2F7),
       appBar: SharedAppBar(),
-      bottomNavigationBar: const SharedNavBar(selectedIndex: 1),
       body: Padding(
         padding: EdgeInsets.symmetric(vertical: 12.5, horizontal: 32),
         child: Column(
