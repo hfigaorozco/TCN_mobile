@@ -172,27 +172,40 @@ class _ViajarScreenState extends State<ViajarScreen> {
             child: Column(
               children: [
 
-                const Text(
-                  "¡Viajemos juntos!",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 35,
-                    fontWeight: FontWeight.w900,
+                /// CARD TITULO
+                Card(
+                  color: Colors.white,
+                  elevation: 6,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(18),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 50),
+                    child: Column(
+                      children: const [
+                        Text(
+                          "¡Viajemos juntos!",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 30,
+                            fontWeight: FontWeight.w900,
+                          ),
+                        ),
+                        SizedBox(height: 7),
+                        Text(
+                          "¿Cuál es tu siguiente viaje?",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 17,
+                            color: Colors.black54,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
 
-                const SizedBox(height: 10),
-
-                const Text(
-                  "¿Cuál es tu siguiente viaje?",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 17,
-                    color: Colors.black54,
-                  ),
-                ),
-
-                const SizedBox(height: 25),
+                const SizedBox(height: 15),
 
                 /// CARD PRINCIPAL
                 Card(
@@ -362,6 +375,8 @@ class _ViajarScreenState extends State<ViajarScreen> {
                     ),
                   ),
                 ),
+
+                const SizedBox(height: 15),
 
               ],
             ),

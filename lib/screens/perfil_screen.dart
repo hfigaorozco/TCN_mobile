@@ -150,7 +150,7 @@ class _PerfilScreenState extends State<PerfilScreen> {
                 ],
               ),
               child: const Text(
-                'Mi Perfil',
+                'Tu Perfil',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 25,
