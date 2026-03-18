@@ -150,7 +150,7 @@ class _PerfilScreenState extends State<PerfilScreen> {
                 ],
               ),
               child: const Text(
-                'Tu Perfil',
+                'Mi Perfil',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 25,
@@ -164,7 +164,7 @@ class _PerfilScreenState extends State<PerfilScreen> {
 
             Container(
               width: double.infinity,
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 28),
+              padding: const EdgeInsets.symmetric(horizontal: 26, vertical: 31),
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(16),
@@ -241,7 +241,7 @@ class _PerfilScreenState extends State<PerfilScreen> {
                     child: const Text(
                       'Cambiar foto',
                       style: TextStyle(
-                        fontSize: 15,
+                        fontSize: 16,
                         color: Color(0xFF1565C0),
                         decoration: TextDecoration.underline,
                         decorationColor: Color(0xFF1565C0),
@@ -249,17 +249,17 @@ class _PerfilScreenState extends State<PerfilScreen> {
                     ),
                   ),
 
-                  const SizedBox(height: 40),
+                  const SizedBox(height: 25),
 
                   const Text(
                     'Usuario:',
-                    style: TextStyle(fontSize: 16, color: Colors.grey),
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 19, color: Colors.grey),
                   ),
                   const SizedBox(height: 4),
                   Text(
                     nombre,
                     style: const TextStyle(
-                      fontSize: 18,
+                      fontSize: 22,
                       fontWeight: FontWeight.bold,
                       color: Color(0xFF1565C0),
                     ),
@@ -268,13 +268,13 @@ class _PerfilScreenState extends State<PerfilScreen> {
 
                   const Text(
                     'Correo:',
-                    style: TextStyle(fontSize: 16, color: Colors.grey),
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 19, color: Colors.grey),
                   ),
                   const SizedBox(height: 4),
                   Text(
                     correo,
                     style: const TextStyle(
-                      fontSize: 18,
+                      fontSize: 22,
                       fontWeight: FontWeight.bold,
                       color: Color(0xFF1565C0),
                     ),

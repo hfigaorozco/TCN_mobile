@@ -72,7 +72,7 @@ class SharedNavBar extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Container(
-            padding: const EdgeInsets.all(10),
+            padding: const EdgeInsets.all(6),
             decoration: BoxDecoration(
               color: isSelected ? const Color(0xFF1F5FBF) : Colors.transparent,
               shape: BoxShape.circle,

@@ -30,7 +30,6 @@ class _ViajarScreenState extends State<ViajarScreen> {
   DateTime? fechaSeleccionada;
 
   Future<void> seleccionarFecha(BuildContext context) async {
-
     final DateTime hoy = DateTime.now();
     final DateTime limite = hoy.add(const Duration(days: 15));
 
@@ -39,13 +38,36 @@ class _ViajarScreenState extends State<ViajarScreen> {
       initialDate: fechaSeleccionada ?? hoy,
       firstDate: hoy,
       lastDate: limite,
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: const ColorScheme.light(
+              primary: Color(0xFF1565C0),
+              onPrimary: Colors.white,
+              onSurface: Color(0xFF1565C0),
+              surface: Colors.white,
+            ),
+            textButtonTheme: TextButtonThemeData(
+              style: TextButton.styleFrom(
+                foregroundColor: const Color(0xFF1565C0),
+              ),
+            ),
+            dialogTheme: DialogThemeData(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(18),
+                side: const BorderSide(color: Color(0xFF1565C0), width: 1.5),
+              ),
+            ),
+          ),
+          child: child!,
+        );
+      },
     );
 
     if (fecha != null) {
       setState(() {
         fechaSeleccionada = fecha;
-        fechaController.text =
-            "${fecha.day}/${fecha.month}/${fecha.year}";
+        fechaController.text = "${fecha.day}/${fecha.month}/${fecha.year}";
       });
     }
   }
@@ -75,15 +97,66 @@ class _ViajarScreenState extends State<ViajarScreen> {
   InputDecoration inputDecoracion(String hint, IconData icon) {
     return InputDecoration(
       hintText: hint,
-      prefixIcon: Icon(icon),
+      hintStyle: const TextStyle(color: Color(0xFF1565C0)),
+      prefixIcon: Icon(icon, color: const Color(0xFF1565C0)),
       filled: true,
-      fillColor: const Color(0xFFF4F6FB),
+      fillColor: Colors.white,
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
-        borderSide: BorderSide.none,
+        borderSide: const BorderSide(color: Color(0xFF1565C0), width: 1.5),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: const BorderSide(color: Color(0xFF1565C0), width: 1.5),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: const BorderSide(color: Color(0xFF1565C0), width: 2.5),
       ),
     );
   }
+
+  MenuStyle get _menuStyle => MenuStyle(
+    backgroundColor: const WidgetStatePropertyAll(Colors.white),
+    shape: WidgetStatePropertyAll(
+      RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+    ),
+    side: const WidgetStatePropertyAll(
+      BorderSide(color: Color(0xFF1565C0), width: 1.5),
+    ),
+    minimumSize: const WidgetStatePropertyAll(Size(200, 0)),
+    maximumSize: const WidgetStatePropertyAll(Size(250, 300)),
+  );
+
+  InputDecorationTheme get _dropdownTheme => InputDecorationTheme(
+    filled: true,
+    fillColor: Colors.white,
+    border: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(12),
+      borderSide: const BorderSide(color: Color(0xFF1565C0), width: 1.5),
+    ),
+    enabledBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(12),
+      borderSide: const BorderSide(color: Color(0xFF1565C0), width: 1.5),
+    ),
+    focusedBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(12),
+      borderSide: const BorderSide(color: Color(0xFF1565C0), width: 2.5),
+    ),
+  );
+
+  List<DropdownMenuEntry<String>> get _ciudadEntries => ciudades.map((value) {
+    return DropdownMenuEntry(
+      value: value,
+      label: value,
+      style: ButtonStyle(
+        foregroundColor: const WidgetStatePropertyAll(Color(0xFF1565C0)),
+        overlayColor: WidgetStatePropertyAll(
+          const Color(0xFF1565C0).withOpacity(0.08),
+        ),
+      ),
+    );
+  }).toList();
 
   @override
   Widget build(BuildContext context) {
@@ -134,47 +207,31 @@ class _ViajarScreenState extends State<ViajarScreen> {
                       children: [
 
                         /// ORIGEN
-                        DropdownButtonFormField<String>(
-                          initialValue: _origen,
-                          hint: const Text("Seleccionar origen"),
-                          items: ciudades.map((value) {
-                            return DropdownMenuItem(
-                              value: value,
-                              child: Text(value),
-                            );
-                          }).toList(),
-                          onChanged: (value) {
-                            setState(() {
-                              _origen = value;
-                            });
+                        DropdownMenu<String>(
+                          hintText: "Seleccionar origen",
+                          leadingIcon: const Icon(Icons.location_city, color: Color(0xFF1565C0)),
+                          width: double.infinity,
+                          inputDecorationTheme: _dropdownTheme,
+                          menuStyle: _menuStyle,
+                          dropdownMenuEntries: _ciudadEntries,
+                          onSelected: (value) {
+                            setState(() => _origen = value);
                           },
-                          decoration: inputDecoracion(
-                            "Origen",
-                            Icons.location_city,
-                          ),
                         ),
 
                         const SizedBox(height: 22),
 
                         /// DESTINO
-                        DropdownButtonFormField<String>(
-                          initialValue: _destino,
-                          hint: const Text("Seleccionar destino"),
-                          items: ciudades.map((value) {
-                            return DropdownMenuItem(
-                              value: value,
-                              child: Text(value),
-                            );
-                          }).toList(),
-                          onChanged: (value) {
-                            setState(() {
-                              _destino = value;
-                            });
+                        DropdownMenu<String>(
+                          hintText: "Seleccionar destino",
+                          leadingIcon: const Icon(Icons.location_on, color: Color(0xFF1565C0)),
+                          width: double.infinity,
+                          inputDecorationTheme: _dropdownTheme,
+                          menuStyle: _menuStyle,
+                          dropdownMenuEntries: _ciudadEntries,
+                          onSelected: (value) {
+                            setState(() => _destino = value);
                           },
-                          decoration: inputDecoracion(
-                            "Destino",
-                            Icons.location_on,
-                          ),
                         ),
 
                         const SizedBox(height: 22),
@@ -184,6 +241,7 @@ class _ViajarScreenState extends State<ViajarScreen> {
                           controller: fechaController,
                           readOnly: true,
                           onTap: () => seleccionarFecha(context),
+                          style: const TextStyle(color: Color(0xFF1565C0)),
                           decoration: inputDecoracion(
                             "Seleccionar fecha",
                             Icons.calendar_today,
@@ -194,40 +252,39 @@ class _ViajarScreenState extends State<ViajarScreen> {
 
                         /// PASAJEROS
                         Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
 
-                            const Text(
-                              "Cantidad de pasajeros",
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 18,
+                            const Icon(Icons.people, size: 20, color: Color(0xFF1565C0)),
+
+                            const SizedBox(width: 5),
+
+                            const Expanded(
+                              child: Text(
+                                "Cantidad de pasajeros",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                ),
                               ),
                             ),
 
-                            Row(
-                              children: [
+                            IconButton(
+                              onPressed: disminuirPasajeros,
+                              icon: const Icon(Icons.remove_circle_outline, color: Color(0xFF1565C0)),
+                            ),
 
-                                IconButton(
-                                  onPressed: disminuirPasajeros,
-                                  icon: const Icon(Icons.remove_circle_outline),
-                                ),
+                            Text(
+                              "$_cantPasajeros",
+                              style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
 
-                                Text(
-                                  "$_cantPasajeros",
-                                  style: const TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-
-                                IconButton(
-                                  onPressed: aumentarPasajeros,
-                                  icon: const Icon(Icons.add_circle_outline),
-                                ),
-
-                              ],
-                            )
+                            IconButton(
+                              onPressed: aumentarPasajeros,
+                              icon: const Icon(Icons.add_circle_outline, color: Color(0xFF1565C0)),
+                            ),
 
                           ],
                         ),
@@ -240,7 +297,8 @@ class _ViajarScreenState extends State<ViajarScreen> {
                 const SizedBox(height: 20),
 
                 /// BOTON CONTINUAR
-                ElevatedButton(
+                ElevatedButton.icon(
+                  icon: const Icon(Icons.access_time, size: 25),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF1565C0),
                     foregroundColor: Colors.white,
@@ -250,7 +308,6 @@ class _ViajarScreenState extends State<ViajarScreen> {
                     ),
                   ),
                   onPressed: () {
-
                     if (_origen == null || _destino == null || fechaSeleccionada == null) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
@@ -267,8 +324,8 @@ class _ViajarScreenState extends State<ViajarScreen> {
                       ),
                     );
                   },
-                  child: const Text(
-                    "Buscar corridas",
+                  label: const Text(
+                    "Consultar horarios",
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
@@ -279,15 +336,12 @@ class _ViajarScreenState extends State<ViajarScreen> {
                 const SizedBox(height: 15),
 
                 /// BOTON TERMINALES
-                ElevatedButton(
+                ElevatedButton.icon(
+                  icon: const Icon(Icons.location_on, size: 25),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFFF2F2F7),
-                    foregroundColor: Color(0xFFFF8600),
+                    backgroundColor: const Color(0xFFFF8600),
+                    foregroundColor: Colors.white,
                     minimumSize: const Size(double.infinity, 55),
-                    side: const BorderSide(
-                      color: Color(0xFFFF8600),
-                      width: 2,
-                    ),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(22),
                     ),
@@ -300,11 +354,11 @@ class _ViajarScreenState extends State<ViajarScreen> {
                       ),
                     );
                   },
-                  child: const Text(
+                  label: const Text(
                     "Localizar terminal",
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      fontSize: 18
+                      fontSize: 18,
                     ),
                   ),
                 ),

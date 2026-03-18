@@ -54,9 +54,9 @@ class _CambiarContraScreenState extends State<CambiarContraScreen> {
       return;
     }
 
-    if (nueva.length < 6) {
+    if (nueva.length < 8) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('La contraseña debe tener al menos 6 caracteres')),
+        const SnackBar(content: Text('La contraseña debe tener al menos 8 caracteres')),
       );
       return;
     }
@@ -98,10 +98,10 @@ class _CambiarContraScreenState extends State<CambiarContraScreen> {
     final nombre = user?.userMetadata?['name'] ?? 'Usuario';
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF2F2F7),
-      appBar: const SharedAppBar(),
 
-      bottomNavigationBar: const SharedNavBar(selectedIndex: 2),
+      backgroundColor: const Color(0xFFF2F2F7),
+
+      appBar: const SharedAppBar(),
 
       body: SingleChildScrollView(
         child: Column(
@@ -139,8 +139,8 @@ class _CambiarContraScreenState extends State<CambiarContraScreen> {
                 padding: const EdgeInsets.only(
                   top: 22,
                   bottom: 22,
-                  left: 11,
-                  right: 11,
+                  left: 20,
+                  right: 20,
                 ),
                 decoration: BoxDecoration(
                   color: Colors.white,
@@ -184,7 +184,7 @@ class _CambiarContraScreenState extends State<CambiarContraScreen> {
                     Text(
                       nombre,
                       style: const TextStyle(
-                        fontSize: 18,
+                        fontSize: 20,
                         fontWeight: FontWeight.bold,
                         color: Color(0xFF1565C0),
                       ),
@@ -197,12 +197,15 @@ class _CambiarContraScreenState extends State<CambiarContraScreen> {
                       child: Text(
                         'Nueva contraseña:',
                         style: TextStyle(
-                          fontSize: 20,
+                          fontSize: 16,
                           color: Color(0xFF0961C6),
                           fontWeight: FontWeight.w600,
                         ),
                       ),
                     ),
+
+                    const SizedBox(height: 10),
+                    
                     TextField(
                       controller: nuevaContraController,
                       obscureText: true,
@@ -226,12 +229,15 @@ class _CambiarContraScreenState extends State<CambiarContraScreen> {
                       child: Text(
                         'Confirmar contraseña:',
                         style: TextStyle(
-                          fontSize: 18,
+                          fontSize: 16,
                           color: Color(0xFF0961C6),
                           fontWeight: FontWeight.w600,
                         ),
                       ),
                     ),
+
+                    const SizedBox(height: 10),
+
                     TextField(
                       controller: confirmarContraController,
                       obscureText: true,
