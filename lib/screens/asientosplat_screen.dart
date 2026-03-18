@@ -1,7 +1,15 @@
 import 'package:flutter/material.dart';
+import 'registropasajeros_screen.dart';
 
 class AsientosPlatPlus extends StatefulWidget {
-  const AsientosPlatPlus({super.key});
+  final int totalPasajeros;
+  final int pasajeroActual;
+
+  const AsientosPlatPlus({
+    super.key,
+    required this.totalPasajeros,
+    required this.pasajeroActual,
+  });
 
   @override
   State<AsientosPlatPlus> createState() => _AsientosPlatPlusState();
@@ -11,35 +19,33 @@ class _AsientosPlatPlusState extends State<AsientosPlatPlus> {
 
   int? seleccionado;
 
-  final List<int> ocupados = [7, 12, 18];
+  List<int> ocupados = [7, 12, 18];
 
-  Widget asiento(int numero){
+  Widget asiento(int numero) {
 
     Color color = Colors.green;
 
-    if(ocupados.contains(numero)){
+    if (ocupados.contains(numero)) {
       color = Colors.grey;
     }
 
-    if(seleccionado == numero){
+    if (seleccionado == numero) {
       color = const Color(0xFF2A5CAA);
     }
 
     return GestureDetector(
+      onTap: () {
 
-      onTap: (){
-
-        if(ocupados.contains(numero)) return;
+        if (ocupados.contains(numero)) return;
 
         setState(() {
           seleccionado = numero;
         });
-
       },
 
       child: Container(
-        width: 40,
-        height: 40,
+        width: 34,
+        height: 34,
         decoration: BoxDecoration(
           color: color,
           shape: BoxShape.circle,
@@ -49,7 +55,7 @@ class _AsientosPlatPlusState extends State<AsientosPlatPlus> {
         child: Text(
           "$numero",
           style: const TextStyle(
-            fontSize: 15,
+            fontSize: 11,
             color: Colors.white,
             fontWeight: FontWeight.bold,
           ),
@@ -58,24 +64,24 @@ class _AsientosPlatPlusState extends State<AsientosPlatPlus> {
     );
   }
 
-  Widget fila(int a,int b,int c,int d){
+  Widget fila(int a, int b, int c, int d) {
 
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical:10),
+      padding: const EdgeInsets.symmetric(vertical: 10),
 
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
 
           asiento(a),
-          const SizedBox(width:10),
+          const SizedBox(width: 10),
 
           asiento(b),
 
-          const SizedBox(width:85),
+          const SizedBox(width: 50),
 
           asiento(c),
-          const SizedBox(width:10),
+          const SizedBox(width: 10),
 
           asiento(d),
 
@@ -88,36 +94,33 @@ class _AsientosPlatPlusState extends State<AsientosPlatPlus> {
   Widget build(BuildContext context) {
 
     return Scaffold(
-
       backgroundColor: const Color(0xFFF4F6FB),
 
       body: SafeArea(
-
         child: Column(
           children: [
 
-            const SizedBox(height:10),
+            const SizedBox(height: 10),
 
             _cardViaje(),
 
-            const SizedBox(height:15),
+            const SizedBox(height: 15),
 
             _cardEstados(),
 
-            const SizedBox(height:15),
+            const SizedBox(height: 15),
 
-            /// MAPA CON SCROLL
             Expanded(
               child: SingleChildScrollView(
                 child: _mapaBus(),
               ),
             ),
 
-            const SizedBox(height:10),
+            const SizedBox(height: 10),
 
-            _botonInicio(),
+            _botones(),
 
-            const SizedBox(height:20),
+            const SizedBox(height: 20),
 
           ],
         ),
@@ -125,11 +128,10 @@ class _AsientosPlatPlusState extends State<AsientosPlatPlus> {
     );
   }
 
-  /// TARJETA VIAJE
-  Widget _cardViaje(){
+  Widget _cardViaje() {
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal:20),
+      padding: const EdgeInsets.symmetric(horizontal: 20),
 
       child: Container(
         padding: const EdgeInsets.all(16),
@@ -138,16 +140,16 @@ class _AsientosPlatPlusState extends State<AsientosPlatPlus> {
         child: Column(
           children: [
 
-            Row(
+            const Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: const [
+              children: [
                 Text("Fecha"),
                 Text("Servicio"),
-                Text("Fecha"),
+                Text("Fecha")
               ],
             ),
 
-            const SizedBox(height:5),
+            const SizedBox(height: 5),
 
             Row(
               children: [
@@ -157,47 +159,44 @@ class _AsientosPlatPlusState extends State<AsientosPlatPlus> {
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
 
-                const SizedBox(width:10),
+                const SizedBox(width: 10),
 
                 Expanded(
                   child: Container(
-                    height:3,
-                    color: Color(0xFF2A5CAA),
+                    height: 3,
+                    color: const Color(0xFF2A5CAA),
                   ),
                 ),
 
-                const SizedBox(width:10),
+                const SizedBox(width: 10),
 
                 const Text(
                   "Destino",
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
-
               ],
             ),
 
-            const SizedBox(height:5),
+            const SizedBox(height: 5),
 
-            Row(
+            const Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: const [
+              children: [
                 Text("Hora"),
                 Text("Autobús 183"),
-                Text("Hora"),
+                Text("Hora")
               ],
             ),
-
           ],
         ),
       ),
     );
   }
 
-  /// TARJETA ESTADOS
-  Widget _cardEstados(){
+  Widget _cardEstados() {
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal:20),
+      padding: const EdgeInsets.symmetric(horizontal: 20),
 
       child: Container(
         padding: const EdgeInsets.all(12),
@@ -210,42 +209,40 @@ class _AsientosPlatPlusState extends State<AsientosPlatPlus> {
 
             Row(
               children: [
-                CircleAvatar(radius:8,backgroundColor: Colors.green),
-                SizedBox(width:5),
-                Text("Disponible")
+                CircleAvatar(radius: 8, backgroundColor: Colors.green),
+                SizedBox(width: 5),
+                Text("Disponible"),
               ],
             ),
 
             Row(
               children: [
-                CircleAvatar(radius:8,backgroundColor: Colors.grey),
-                SizedBox(width:5),
-                Text("Ocupado")
+                CircleAvatar(radius: 8, backgroundColor: Colors.grey),
+                SizedBox(width: 5),
+                Text("Ocupado"),
               ],
             ),
 
             Row(
               children: [
-                CircleAvatar(radius:8,backgroundColor: Color(0xFF2A5CAA)),
-                SizedBox(width:5),
-                Text("Seleccionado")
+                CircleAvatar(radius: 8, backgroundColor: Color(0xFF2A5CAA)),
+                SizedBox(width: 5),
+                Text("Seleccionado"),
               ],
             ),
-
           ],
         ),
       ),
     );
   }
 
-  /// MAPA BUS (AHORA MÁS ALTO)
-  Widget _mapaBus(){
+  Widget _mapaBus() {
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal:20),
+      padding: const EdgeInsets.symmetric(horizontal: 20),
 
       child: Container(
-        height: 900, // 👈 altura grande para scroll
+        height: 900,
         padding: const EdgeInsets.all(10),
 
         decoration: BoxDecoration(
@@ -253,7 +250,7 @@ class _AsientosPlatPlusState extends State<AsientosPlatPlus> {
           borderRadius: BorderRadius.circular(30),
           border: Border.all(
             color: const Color(0xFF2A5CAA),
-            width:3,
+            width: 3,
           ),
         ),
 
@@ -261,7 +258,6 @@ class _AsientosPlatPlusState extends State<AsientosPlatPlus> {
           alignment: Alignment.center,
           children: [
 
-            /// IMAGEN ROTADA
             Positioned.fill(
               child: RotatedBox(
                 quarterTurns: 1,
@@ -272,69 +268,107 @@ class _AsientosPlatPlusState extends State<AsientosPlatPlus> {
               ),
             ),
 
-            /// ASIENTOS
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
 
-                fila(1,2,3,4),
-                fila(5,6,7,8),
-                fila(9,10,11,12),
-                fila(13,14,15,16),
-                fila(17,18,19,20),
-                fila(21,22,23,24),
-                fila(25,26,27,28),
-                fila(29,30,31,32),
-                fila(33,34,35,36),
-
+                fila(1, 2, 3, 4),
+                fila(5, 6, 7, 8),
+                fila(9, 10, 11, 12),
+                fila(13, 14, 15, 16),
+                fila(17, 18, 19, 20),
+                fila(21, 22, 23, 24),
+                fila(25, 26, 27, 28),
+                fila(29, 30, 31, 32),
+                fila(33, 34, 35, 36),
 
               ],
             ),
-
           ],
         ),
       ),
     );
   }
 
-  /// BOTON
-  Widget _botonInicio(){
+  Widget _botones() {
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal:20),
+      padding: const EdgeInsets.symmetric(horizontal: 20),
 
-      child: SizedBox(
-        width: double.infinity,
-        height:55,
+      child: Row(
+        children: [
 
-        child: ElevatedButton.icon(
-
-          icon: const Icon(Icons.home,color:Colors.white),
-
-          label: const Text(
-            "Volver al inicio",
-            style: TextStyle(
-              fontSize:18,
-              color:Colors.white,
-            ),
-          ),
-
-          style: ElevatedButton.styleFrom(
-            backgroundColor: const Color(0xFF2A5CAA),
-            shape: RoundedRectangleBorder(
+          Container(
+            width: 55,
+            height: 55,
+            decoration: BoxDecoration(
+              color: const Color(0xFF2A5CAA),
               borderRadius: BorderRadius.circular(25),
             ),
+            child: IconButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              icon: const Icon(Icons.home, color: Colors.white, size: 26),
+            ),
           ),
 
-          onPressed: (){
-            Navigator.pop(context);
-          },
-        ),
+          const SizedBox(width: 15),
+
+          Expanded(
+            child: SizedBox(
+              height: 55,
+
+              child: ElevatedButton(
+
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF2A5CAA),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(25),
+                  ),
+                ),
+
+                onPressed: () {
+
+                  if (seleccionado == null) return;
+
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => RegistrarPasajero(
+                        totalPasajeros: widget.totalPasajeros,
+                        pasajeroActual: widget.pasajeroActual,
+                        asiento: seleccionado!,
+                      ),
+                    ),
+                  ).then((_) {
+
+                    setState(() {
+
+                      ocupados.add(seleccionado!);
+                      seleccionado = null;
+
+                    });
+
+                  });
+                },
+
+                child: const Text(
+                  "Continuar",
+                  style: TextStyle(
+                    fontSize: 18,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
 
-  BoxDecoration _box(){
+  BoxDecoration _box() {
 
     return BoxDecoration(
       color: Colors.white,
@@ -344,10 +378,9 @@ class _AsientosPlatPlusState extends State<AsientosPlatPlus> {
         BoxShadow(
           color: Colors.black12,
           blurRadius: 10,
-          offset: Offset(0,4),
-        )
+          offset: Offset(0, 4),
+        ),
       ],
     );
   }
-
 }

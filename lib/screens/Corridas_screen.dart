@@ -4,7 +4,13 @@ import 'asientosplat_screen.dart';
 import 'asientosplus_screen.dart';
 
 class CorridasScreen extends StatefulWidget {
-  const CorridasScreen({super.key});
+
+  final int totalPasajeros;
+
+  const CorridasScreen({
+    super.key,
+    required this.totalPasajeros,
+  });
 
   @override
   _CorridasScreenState createState() => _CorridasScreenState();
@@ -14,6 +20,7 @@ class _CorridasScreenState extends State<CorridasScreen> {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       backgroundColor: const Color(0xFFF4F6FB),
 
@@ -25,7 +32,7 @@ class _CorridasScreenState extends State<CorridasScreen> {
 
             const SizedBox(height: 20),
 
-            // tarjeta de busqueda
+            /// TARJETA BUSQUEDA
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: _cardBusqueda(),
@@ -33,7 +40,7 @@ class _CorridasScreenState extends State<CorridasScreen> {
 
             const SizedBox(height: 20),
 
-            // lista de corridas
+            /// LISTA DE CORRIDAS
             Expanded(
               child: ListView(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -53,7 +60,7 @@ class _CorridasScreenState extends State<CorridasScreen> {
 
             const SizedBox(height: 10),
 
-            // boton volver
+            /// BOTON VOLVER
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: SizedBox(
@@ -66,7 +73,7 @@ class _CorridasScreenState extends State<CorridasScreen> {
                   icon: const Icon(Icons.home, color: Colors.white),
                   label: const Text(
                     "Volver al inicio",
-                    style: TextStyle(fontSize: 18,color: Colors.white),
+                    style: TextStyle(fontSize: 18, color: Colors.white),
                   ),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF1F5FBF),
@@ -85,11 +92,13 @@ class _CorridasScreenState extends State<CorridasScreen> {
     );
   }
 
-  // tarjeta origen destino
+  /// TARJETA ORIGEN / DESTINO
   Widget _cardBusqueda() {
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: _boxDecoration(),
+
       child: Column(
         children: [
 
@@ -129,22 +138,14 @@ class _CorridasScreenState extends State<CorridasScreen> {
 
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: const [
+            children: [
 
               Row(
-                children: [
-                  Text(
-                    "Fecha ",
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.black54,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+                children: const [
+                  Text("Fecha "),
                   Text(
                     "22/03/2026",
                     style: TextStyle(
-                      fontSize: 16,
                       color: Color(0xFF2A5CAA),
                       fontWeight: FontWeight.bold,
                     ),
@@ -154,18 +155,10 @@ class _CorridasScreenState extends State<CorridasScreen> {
 
               Row(
                 children: [
+                  const Text("Pasajeros "),
                   Text(
-                    "Pasajeros ",
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.black54,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  Text(
-                    "3",
-                    style: TextStyle(
-                      fontSize: 16,
+                    "${widget.totalPasajeros}",
+                    style: const TextStyle(
                       color: Color(0xFF2A5CAA),
                       fontWeight: FontWeight.bold,
                     ),
@@ -179,7 +172,7 @@ class _CorridasScreenState extends State<CorridasScreen> {
     );
   }
 
-  // tarjeta corrida
+  /// TARJETA CORRIDA
   Widget _cardCorrida(bool azul) {
 
     Color colorPrincipal =
@@ -194,7 +187,10 @@ class _CorridasScreenState extends State<CorridasScreen> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (_) => const AsientosPlatPlus(),
+              builder: (_) => AsientosPlatPlus(
+                totalPasajeros: widget.totalPasajeros,
+                pasajeroActual: 1,
+              ),
             ),
           );
 
@@ -203,7 +199,10 @@ class _CorridasScreenState extends State<CorridasScreen> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (_) => const AsientosPlusPlus(),
+              builder: (_) => AsientosPlusPlus(
+                totalPasajeros: widget.totalPasajeros,
+                pasajeroActual: 1,
+              ),
             ),
           );
 
@@ -307,11 +306,13 @@ class _CorridasScreenState extends State<CorridasScreen> {
     );
   }
 
-  // decoracion reutilizable
+  /// DECORACION
   BoxDecoration _boxDecoration() {
+
     return BoxDecoration(
       color: Colors.white,
       borderRadius: BorderRadius.circular(20),
+
       boxShadow: const [
         BoxShadow(
           color: Colors.black12,

@@ -331,18 +331,20 @@ class _ViajarScreenState extends State<ViajarScreen> {
                     }
 
                     if (_origen == _destino) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text("El origen y destino no pueden ser iguales"),
-                          ),
-                        );
-                        return;
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text("El origen y destino no pueden ser iguales"),
+                        ),
+                      );
+                      return;
                     }
 
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => CorridasScreen(),
+                        builder: (context) => CorridasScreen(
+                          totalPasajeros: _cantPasajeros, // 🔥 FIX
+                        ),
                       ),
                     );
                   },

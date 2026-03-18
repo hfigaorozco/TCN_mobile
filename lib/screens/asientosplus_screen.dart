@@ -1,7 +1,16 @@
 import 'package:flutter/material.dart';
+import 'registropasajeros_screen.dart';
 
 class AsientosPlusPlus extends StatefulWidget {
-  const AsientosPlusPlus({super.key});
+
+  final int totalPasajeros;
+  final int pasajeroActual;
+
+  const AsientosPlusPlus({
+    super.key,
+    required this.totalPasajeros,
+    required this.pasajeroActual,
+  });
 
   @override
   State<AsientosPlusPlus> createState() => _AsientosPlusPlusState();
@@ -11,18 +20,18 @@ class _AsientosPlusPlusState extends State<AsientosPlusPlus> {
 
   int? seleccionado;
 
-  final List<int> ocupados = [6, 10, 11, 18, 19, 26, 27];
+  List<int> ocupados = [6, 10, 11, 18, 19, 26, 27];
 
   Widget asiento(int numero){
 
     Color color = Colors.green;
 
     if(ocupados.contains(numero)){
-      color = Colors.grey;
+      color = Colors.grey; // ocupados gris
     }
 
     if(seleccionado == numero){
-      color = const Color(0xFFFF7A00);
+      color = const Color(0xFFFF7A00); // seleccionado naranja
     }
 
     return GestureDetector(
@@ -38,8 +47,8 @@ class _AsientosPlusPlusState extends State<AsientosPlusPlus> {
       },
 
       child: Container(
-        width: 40,
-        height: 40,
+        width: 34,
+        height: 34,
         decoration: BoxDecoration(
           color: color,
           shape: BoxShape.circle,
@@ -49,7 +58,7 @@ class _AsientosPlusPlusState extends State<AsientosPlusPlus> {
         child: Text(
           "$numero",
           style: const TextStyle(
-            fontSize: 15,
+            fontSize: 11,
             color: Colors.white,
             fontWeight: FontWeight.bold,
           ),
@@ -68,14 +77,14 @@ class _AsientosPlusPlusState extends State<AsientosPlusPlus> {
         children: [
 
           asiento(a),
-          const SizedBox(width:5),
+          const SizedBox(width:10),
 
           asiento(b),
 
-          const SizedBox(width:85),
+          const SizedBox(width:50),
 
           asiento(c),
-          const SizedBox(width:5),
+          const SizedBox(width:10),
 
           asiento(d),
 
@@ -83,21 +92,6 @@ class _AsientosPlusPlusState extends State<AsientosPlusPlus> {
       ),
     );
   }
-
-  Widget filaDos(int a, int b) {
-  return Padding(
-    padding: const EdgeInsets.symmetric(vertical: 10),
-    child: Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        asiento(a),
-        const SizedBox(width: 5),
-        asiento(b),
-        const SizedBox(width: 85 + 5 + 40 + 40), 
-      ],
-    ),
-  );
-}
 
   @override
   Widget build(BuildContext context) {
@@ -121,7 +115,6 @@ class _AsientosPlusPlusState extends State<AsientosPlusPlus> {
 
             const SizedBox(height:15),
 
-            /// MAPA CON SCROLL
             Expanded(
               child: SingleChildScrollView(
                 child: _mapaBus(),
@@ -130,7 +123,7 @@ class _AsientosPlusPlusState extends State<AsientosPlusPlus> {
 
             const SizedBox(height:10),
 
-            _botonInicio(),
+            _botones(),
 
             const SizedBox(height:20),
 
@@ -140,7 +133,6 @@ class _AsientosPlusPlusState extends State<AsientosPlusPlus> {
     );
   }
 
-  /// TARJETA VIAJE (COLOR PLUS)
   Widget _cardViaje(){
 
     return Padding(
@@ -208,7 +200,6 @@ class _AsientosPlusPlusState extends State<AsientosPlusPlus> {
     );
   }
 
-  /// TARJETA ESTADOS
   Widget _cardEstados(){
 
     return Padding(
@@ -253,7 +244,6 @@ class _AsientosPlusPlusState extends State<AsientosPlusPlus> {
     );
   }
 
-  /// MAPA AUTOBUS
   Widget _mapaBus(){
 
     return Padding(
@@ -277,7 +267,6 @@ class _AsientosPlusPlusState extends State<AsientosPlusPlus> {
 
           children: [
 
-            /// IMAGEN BUS
             Positioned.fill(
               child: RotatedBox(
                 quarterTurns: 1,
@@ -288,12 +277,9 @@ class _AsientosPlusPlusState extends State<AsientosPlusPlus> {
               ),
             ),
 
-            /// ASIENTOS
             Column(
-              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-
-                const SizedBox(height: 140),
 
                 fila(1,2,3,4),
                 fila(5,6,7,8),
@@ -305,8 +291,6 @@ class _AsientosPlusPlusState extends State<AsientosPlusPlus> {
                 fila(29,30,31,32),
                 fila(33,34,35,36),
                 fila(37,38,39,40),
-                filaDos(41, 42),
-                filaDos(43, 44),
 
               ],
             ),
@@ -317,39 +301,87 @@ class _AsientosPlusPlusState extends State<AsientosPlusPlus> {
     );
   }
 
-  /// BOTON
-  Widget _botonInicio(){
+  Widget _botones(){
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal:20),
 
-      child: SizedBox(
-        width: double.infinity,
-        height:55,
+      child: Row(
+        children: [
 
-        child: ElevatedButton.icon(
-
-          icon: const Icon(Icons.home,color:Colors.white),
-
-          label: const Text(
-            "Volver al inicio",
-            style: TextStyle(
-              fontSize:18,
-              color:Colors.white,
-            ),
-          ),
-
-          style: ElevatedButton.styleFrom(
-            backgroundColor: const Color(0xFFFF7A00),
-            shape: RoundedRectangleBorder(
+          Container(
+            width:55,
+            height:55,
+            decoration: BoxDecoration(
+              color: const Color(0xFFFF7A00),
               borderRadius: BorderRadius.circular(25),
             ),
+            child: IconButton(
+              onPressed: (){
+                Navigator.pop(context);
+              },
+              icon: const Icon(
+                Icons.home,
+                color: Colors.white,
+                size: 26,
+              ),
+            ),
           ),
 
-          onPressed: (){
-            Navigator.pop(context);
-          },
-        ),
+          const SizedBox(width:15),
+
+          Expanded(
+            child: SizedBox(
+              height:55,
+
+              child: ElevatedButton(
+
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFFFF7A00),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(25),
+                  ),
+                ),
+
+                onPressed: (){
+
+                  if(seleccionado == null) return;
+
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => RegistrarPasajero(
+                        totalPasajeros: widget.totalPasajeros,
+                        pasajeroActual: widget.pasajeroActual,
+                        asiento: seleccionado!,
+                      ),
+                    ),
+                  ).then((_) {
+
+                    setState(() {
+
+                      ocupados.add(seleccionado!);
+                      seleccionado = null;
+
+                    });
+
+                  });
+
+                },
+
+                child: const Text(
+                  "Continuar",
+                  style: TextStyle(
+                    fontSize:18,
+                    color:Colors.white,
+                  ),
+                ),
+
+              ),
+            ),
+          ),
+
+        ],
       ),
     );
   }
