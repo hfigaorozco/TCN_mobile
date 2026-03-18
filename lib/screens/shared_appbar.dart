@@ -16,6 +16,7 @@ class SharedAppBar extends StatelessWidget implements PreferredSizeWidget {
           bottomRight: Radius.circular(28),
         ),
         child: AppBar(
+          automaticallyImplyLeading: false,
           iconTheme: const IconThemeData(color: Colors.white),
           backgroundColor: const Color(0xFF1060C3),
           elevation: 4,

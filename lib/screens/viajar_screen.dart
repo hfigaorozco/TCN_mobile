@@ -330,6 +330,15 @@ class _ViajarScreenState extends State<ViajarScreen> {
                       return;
                     }
 
+                    if (_origen == _destino) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text("El origen y destino no pueden ser iguales"),
+                          ),
+                        );
+                        return;
+                    }
+
                     Navigator.push(
                       context,
                       MaterialPageRoute(
