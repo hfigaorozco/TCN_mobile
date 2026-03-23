@@ -22,23 +22,23 @@ class _AsientosPlusPlusState extends State<AsientosPlusPlus> {
 
   List<int> ocupados = [6, 10, 11, 18, 19, 26, 27];
 
-  Widget asiento(int numero){
+  Widget asiento(int numero) {
 
     Color color = Colors.green;
 
-    if(ocupados.contains(numero)){
-      color = Colors.grey; // ocupados gris
+    if (ocupados.contains(numero)) {
+      color = Colors.grey;
     }
 
-    if(seleccionado == numero){
-      color = const Color(0xFFFF7A00); // seleccionado naranja
+    if (seleccionado == numero) {
+      color = const Color(0xFFFF7A00);
     }
 
     return GestureDetector(
 
-      onTap: (){
+      onTap: () {
 
-        if(ocupados.contains(numero)) return;
+        if (ocupados.contains(numero)) return;
 
         setState(() {
           seleccionado = numero;
@@ -47,8 +47,8 @@ class _AsientosPlusPlusState extends State<AsientosPlusPlus> {
       },
 
       child: Container(
-        width: 34,
-        height: 34,
+        width: 40,
+        height: 40,
         decoration: BoxDecoration(
           color: color,
           shape: BoxShape.circle,
@@ -58,7 +58,7 @@ class _AsientosPlusPlusState extends State<AsientosPlusPlus> {
         child: Text(
           "$numero",
           style: const TextStyle(
-            fontSize: 11,
+            fontSize: 15,
             color: Colors.white,
             fontWeight: FontWeight.bold,
           ),
@@ -67,29 +67,66 @@ class _AsientosPlusPlusState extends State<AsientosPlusPlus> {
     );
   }
 
-  Widget fila(int a,int b,int c,int d){
+  // Fila normal con 4 asientos — centrada
+  Widget fila(int a, int b, int c, int d) {
 
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical:10),
+      padding: const EdgeInsets.symmetric(vertical: 10),
 
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
 
           asiento(a),
-          const SizedBox(width:10),
+          const SizedBox(width: 10),
 
           asiento(b),
 
-          const SizedBox(width:50),
+          const SizedBox(width: 90),
 
           asiento(c),
-          const SizedBox(width:10),
+          const SizedBox(width: 10),
 
           asiento(d),
 
         ],
       ),
+    );
+  }
+
+  // Fila especial con solo 2 asientos alineada con el lado izquierdo de fila()
+  // Ancho total de fila normal = 40+10+40+115+40+10+40 = 270
+  // El padding izquierdo para centrar esa fila = (anchoContenedor - 270) / 2
+  // Con ese mismo padding, los asientos de filaDos quedan alineados con los de la izquierda
+  Widget filaDos(int a, int b) {
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+
+        const double anchoFilaNormal = 270;
+        final double paddingIzquierdo =
+            ((constraints.maxWidth - anchoFilaNormal) / 2).clamp(0.0, double.infinity);
+
+        return Padding(
+          padding: EdgeInsets.only(
+            top: 10,
+            bottom: 10,
+            left: paddingIzquierdo,
+          ),
+
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+
+              asiento(a),
+              const SizedBox(width: 10),
+
+              asiento(b),
+
+            ],
+          ),
+        );
+      },
     );
   }
 
@@ -105,15 +142,15 @@ class _AsientosPlusPlusState extends State<AsientosPlusPlus> {
         child: Column(
           children: [
 
-            const SizedBox(height:10),
+            const SizedBox(height: 10),
 
             _cardViaje(),
 
-            const SizedBox(height:15),
+            const SizedBox(height: 15),
 
             _cardEstados(),
 
-            const SizedBox(height:15),
+            const SizedBox(height: 15),
 
             Expanded(
               child: SingleChildScrollView(
@@ -121,11 +158,11 @@ class _AsientosPlusPlusState extends State<AsientosPlusPlus> {
               ),
             ),
 
-            const SizedBox(height:10),
+            const SizedBox(height: 10),
 
             _botones(),
 
-            const SizedBox(height:20),
+            const SizedBox(height: 20),
 
           ],
         ),
@@ -133,10 +170,10 @@ class _AsientosPlusPlusState extends State<AsientosPlusPlus> {
     );
   }
 
-  Widget _cardViaje(){
+  Widget _cardViaje() {
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal:20),
+      padding: const EdgeInsets.symmetric(horizontal: 20),
 
       child: Container(
         padding: const EdgeInsets.all(16),
@@ -154,7 +191,7 @@ class _AsientosPlusPlusState extends State<AsientosPlusPlus> {
               ],
             ),
 
-            const SizedBox(height:5),
+            const SizedBox(height: 5),
 
             Row(
               children: [
@@ -164,16 +201,16 @@ class _AsientosPlusPlusState extends State<AsientosPlusPlus> {
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
 
-                const SizedBox(width:10),
+                const SizedBox(width: 10),
 
                 Expanded(
                   child: Container(
-                    height:3,
+                    height: 3,
                     color: Color(0xFFFF7A00),
                   ),
                 ),
 
-                const SizedBox(width:10),
+                const SizedBox(width: 10),
 
                 const Text(
                   "Destino",
@@ -183,7 +220,7 @@ class _AsientosPlusPlusState extends State<AsientosPlusPlus> {
               ],
             ),
 
-            const SizedBox(height:5),
+            const SizedBox(height: 5),
 
             const Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -200,10 +237,10 @@ class _AsientosPlusPlusState extends State<AsientosPlusPlus> {
     );
   }
 
-  Widget _cardEstados(){
+  Widget _cardEstados() {
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal:20),
+      padding: const EdgeInsets.symmetric(horizontal: 20),
 
       child: Container(
         padding: const EdgeInsets.all(12),
@@ -216,24 +253,24 @@ class _AsientosPlusPlusState extends State<AsientosPlusPlus> {
 
             Row(
               children: [
-                CircleAvatar(radius:8,backgroundColor: Colors.green),
-                SizedBox(width:5),
+                CircleAvatar(radius: 8, backgroundColor: Colors.green),
+                SizedBox(width: 5),
                 Text("Disponible")
               ],
             ),
 
             Row(
               children: [
-                CircleAvatar(radius:8,backgroundColor: Colors.grey),
-                SizedBox(width:5),
+                CircleAvatar(radius: 8, backgroundColor: Colors.grey),
+                SizedBox(width: 5),
                 Text("Ocupado")
               ],
             ),
 
             Row(
               children: [
-                CircleAvatar(radius:8,backgroundColor: Color(0xFFFF7A00)),
-                SizedBox(width:5),
+                CircleAvatar(radius: 8, backgroundColor: Color(0xFFFF7A00)),
+                SizedBox(width: 5),
                 Text("Seleccionado")
               ],
             ),
@@ -244,10 +281,10 @@ class _AsientosPlusPlusState extends State<AsientosPlusPlus> {
     );
   }
 
-  Widget _mapaBus(){
+  Widget _mapaBus() {
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal:20),
+      padding: const EdgeInsets.symmetric(horizontal: 20),
 
       child: Container(
         height: 900,
@@ -258,7 +295,7 @@ class _AsientosPlusPlusState extends State<AsientosPlusPlus> {
           borderRadius: BorderRadius.circular(30),
           border: Border.all(
             color: const Color(0xFFFF7A00),
-            width:3,
+            width: 3,
           ),
         ),
 
@@ -281,16 +318,20 @@ class _AsientosPlusPlusState extends State<AsientosPlusPlus> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
 
-                fila(1,2,3,4),
-                fila(5,6,7,8),
-                fila(9,10,11,12),
-                fila(13,14,15,16),
-                fila(17,18,19,20),
-                fila(21,22,23,24),
-                fila(25,26,27,28),
-                fila(29,30,31,32),
-                fila(33,34,35,36),
-                fila(37,38,39,40),
+                const SizedBox(height: 120),
+
+                fila(1, 2, 3, 4),
+                fila(5, 6, 7, 8),
+                fila(9, 10, 11, 12),
+                fila(13, 14, 15, 16),
+                fila(17, 18, 19, 20),
+                fila(21, 22, 23, 24),
+                fila(25, 26, 27, 28),
+                fila(29, 30, 31, 32),
+                fila(33, 34, 35, 36),
+                fila(37, 38, 39, 40),
+                filaDos(41, 42),
+                filaDos(43, 44),
 
               ],
             ),
@@ -301,23 +342,23 @@ class _AsientosPlusPlusState extends State<AsientosPlusPlus> {
     );
   }
 
-  Widget _botones(){
+  Widget _botones() {
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal:20),
+      padding: const EdgeInsets.symmetric(horizontal: 20),
 
       child: Row(
         children: [
 
           Container(
-            width:55,
-            height:55,
+            width: 55,
+            height: 55,
             decoration: BoxDecoration(
               color: const Color(0xFFFF7A00),
               borderRadius: BorderRadius.circular(25),
             ),
             child: IconButton(
-              onPressed: (){
+              onPressed: () {
                 Navigator.pop(context);
               },
               icon: const Icon(
@@ -328,11 +369,11 @@ class _AsientosPlusPlusState extends State<AsientosPlusPlus> {
             ),
           ),
 
-          const SizedBox(width:15),
+          const SizedBox(width: 15),
 
           Expanded(
             child: SizedBox(
-              height:55,
+              height: 55,
 
               child: ElevatedButton(
 
@@ -343,9 +384,9 @@ class _AsientosPlusPlusState extends State<AsientosPlusPlus> {
                   ),
                 ),
 
-                onPressed: (){
+                onPressed: () {
 
-                  if(seleccionado == null) return;
+                  if (seleccionado == null) return;
 
                   Navigator.push(
                     context,
@@ -359,10 +400,8 @@ class _AsientosPlusPlusState extends State<AsientosPlusPlus> {
                   ).then((_) {
 
                     setState(() {
-
                       ocupados.add(seleccionado!);
                       seleccionado = null;
-
                     });
 
                   });
@@ -372,8 +411,8 @@ class _AsientosPlusPlusState extends State<AsientosPlusPlus> {
                 child: const Text(
                   "Continuar",
                   style: TextStyle(
-                    fontSize:18,
-                    color:Colors.white,
+                    fontSize: 18,
+                    color: Colors.white,
                   ),
                 ),
 
@@ -386,7 +425,7 @@ class _AsientosPlusPlusState extends State<AsientosPlusPlus> {
     );
   }
 
-  BoxDecoration _box(){
+  BoxDecoration _box() {
 
     return BoxDecoration(
       color: Colors.white,
@@ -396,7 +435,7 @@ class _AsientosPlusPlusState extends State<AsientosPlusPlus> {
         BoxShadow(
           color: Colors.black12,
           blurRadius: 10,
-          offset: Offset(0,4),
+          offset: Offset(0, 4),
         )
       ],
     );
