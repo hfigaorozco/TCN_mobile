@@ -94,10 +94,7 @@ class _AsientosPlusPlusState extends State<AsientosPlusPlus> {
     );
   }
 
-  // Fila especial con solo 2 asientos alineada con el lado izquierdo de fila()
-  // Ancho total de fila normal = 40+10+40+115+40+10+40 = 270
-  // El padding izquierdo para centrar esa fila = (anchoContenedor - 270) / 2
-  // Con ese mismo padding, los asientos de filaDos quedan alineados con los de la izquierda
+
   Widget filaDos(int a, int b) {
 
     return LayoutBuilder(
@@ -119,6 +116,7 @@ class _AsientosPlusPlusState extends State<AsientosPlusPlus> {
             children: [
 
               asiento(a),
+
               const SizedBox(width: 10),
 
               asiento(b),
@@ -318,7 +316,7 @@ class _AsientosPlusPlusState extends State<AsientosPlusPlus> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
 
-                const SizedBox(height: 120),
+                const SizedBox(height: 135),
 
                 fila(1, 2, 3, 4),
                 fila(5, 6, 7, 8),
