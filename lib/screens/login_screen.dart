@@ -21,11 +21,21 @@ class _LoginScreenState extends State<LogInScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text(
-            'El correo electrónico no puede estar vacío ni contener espacios',
+            'El correo electrónico no debe estar vacío ni contener espacios',
           ),
         ),
       );
       return;
+
+    } else if (passwordController.text.isEmpty || passwordController.text.contains(' ')) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'La contraseña no debe estar vacía ni contener espacios'
+          )
+        ),
+      );
+
     } else {
       try {
         await supabase.auth.signInWithPassword(
