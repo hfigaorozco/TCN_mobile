@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'shared_appbar.dart';
-import 'shared_navbar.dart';
 
 class CambiarContraScreen extends StatefulWidget {
   const CambiarContraScreen({super.key});
@@ -68,6 +67,13 @@ class _CambiarContraScreenState extends State<CambiarContraScreen> {
       return;
     }
 
+    if (nueva.contains(' ') || confirmar.contains(' ')) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('La contraseña no debe contener espacios')),
+      );
+      return;
+    }
+
     setState(() => _cargando = true);
 
     try {
@@ -78,7 +84,7 @@ class _CambiarContraScreenState extends State<CambiarContraScreen> {
       if (mounted) {
         Navigator.pop(context);
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('¡Contraseña cambiada exitosamente!')),
+          const SnackBar(content: Text('Contraseña cambiada exitosamente')),
         );
       }
     } on AuthException catch (e) {

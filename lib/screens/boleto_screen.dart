@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'shared_appbar.dart';
-import 'shared_navbar.dart';
 
 class BoletoScreen extends StatefulWidget {
   const BoletoScreen({super.key});
