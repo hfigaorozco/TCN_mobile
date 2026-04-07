@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'shared_appbar.dart';
-import 'shared_navbar.dart';
 
 class CambiarContraScreen extends StatefulWidget {
   const CambiarContraScreen({super.key});
