@@ -21,7 +21,7 @@ class _LoginScreenState extends State<LogInScreen> {
   bool _isLoading = false;
   String? _errorMessage;
 
-  Future<void> login() async {
+  Future<void> _login() async {
     if (_emailController.text.isEmpty ||
         _emailController.text.contains(' ') ||
         _passwordController.text.isEmpty) {
@@ -37,7 +37,7 @@ class _LoginScreenState extends State<LogInScreen> {
       });
 
       try {
-        final response = await _apiService.login(
+        final respuesta = await _apiService.login(
           _emailController.text,
           _passwordController.text,
         );
@@ -54,7 +54,7 @@ class _LoginScreenState extends State<LogInScreen> {
 
         ScaffoldMessenger.of(
           context,
-        ).showSnackBar(SnackBar(content: Text('Error: $_errorMessage')));
+        ).showSnackBar(SnackBar(content: Text('$_errorMessage')));
       } finally {
         setState(() {
           _isLoading = false;
@@ -195,7 +195,7 @@ class _LoginScreenState extends State<LogInScreen> {
                     const SizedBox(height: 25),
 
                     ElevatedButton(
-                      onPressed: _isLoading ? null : login,
+                      onPressed: _isLoading ? null : _login,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF0961C6),
                         minimumSize: const Size(double.infinity, 54),

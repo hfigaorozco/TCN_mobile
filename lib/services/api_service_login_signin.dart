@@ -9,40 +9,43 @@ class ApiServiceLoginSignin {
   static const String baseUrl = Config.baseUrl;
 
   //Guardar el token de Login
-  Future<void> guardarToken(String token) async{
+  Future<void> guardarToken(String token) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('auth_token', token);
   }
 
   //Obtener el token guardado
-  Future<String?> obtenerToken() async{
+  Future<String?> obtenerToken() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString('auth_token');
   }
 
   //Eliminar el token para logout
-  Future<void> quitarToken() async{
+  Future<void> quitarToken() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove('auth_token');
   }
 
   //Obtener headers con token
-  Future<Map<String, String>> _obtenerHeaders() async{
+  Future<Map<String, String>> _obtenerHeaders() async {
     final token = await obtenerToken();
     return {
-      'content-type': 'application/json',
+      'content-Type': 'application/json',
       'Authorization': 'Token $token',
     };
   }
 
-
   //Registro
-  Future<Usuario> registrar(String nombre, String email, String password,) async{
+  Future<Usuario> registrar(
+    String nombre,
+    String email,
+    String password,
+  ) async {
     final url = Uri.parse('$baseUrl/registro/');
 
     final respuesta = await http.post(
       url,
-      headers:{'Content-Type': 'application/json'},
+      headers: {'Content-Type': 'application/json'},
       body: jsonEncode({
         'nombre': nombre,
         'email': email,
@@ -57,21 +60,18 @@ class ApiServiceLoginSignin {
     }
   }
 
-
   //Login
-  Future<LoginRespuesta> login(String email, String password) async{
+  Future<LoginRespuesta> login(String email, String password) async {
     final url = Uri.parse('$baseUrl/login/');
     final respuesta = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({
-        'email': email,
-        'password': password,
-      })
+      body: jsonEncode({'email': email, 'password': password}),
     );
 
-    if(respuesta.statusCode == 200){
+    if (respuesta.statusCode == 200) {
       final data = jsonDecode(respuesta.body);
+      print(data);
       final loginRespuesta = LoginRespuesta.fromJson(data);
       await guardarToken(loginRespuesta.token);
       return loginRespuesta;
