@@ -77,7 +77,7 @@ class _RegistroScreenState extends State<RegistroScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              'Ya existe una cuenta con este correo electrónico.',
+              _error ?? '',
               style: TextStyle(color: Color(0xFF0961C6)),
             ),
           ),
