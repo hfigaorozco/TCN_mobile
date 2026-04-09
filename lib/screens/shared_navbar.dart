@@ -1,5 +1,3 @@
-// shared navbar
-
 import 'package:flutter/material.dart';
 import 'viajar_screen.dart';
 import 'reservaciones_screen.dart';
@@ -24,8 +22,8 @@ class _SharedNavbarState extends State<SharedNavbar> {
 
   Future<String?> _obtenerSesion() async {
     final prefs = await SharedPreferences.getInstance();
-    final _session = prefs.getString('auth_token');
-    return _session;
+    final session = prefs.getString('auth_token');
+    return session;
   }
 
   @override
@@ -72,12 +70,23 @@ class _SharedNavbarState extends State<SharedNavbar> {
             (route) => false,
           );
         }
+
         if (index == 1) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (_) => const ReservacionesScreen()),
-          );
+          if (await _obtenerSesion() != null) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => const ReservacionesScreen(),
+              ),
+            );
+          } else {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const LogInScreen()),
+            );
+          }
         }
+
         if (index == 2) {
           if (await _obtenerSesion() != null) {
             Navigator.push(

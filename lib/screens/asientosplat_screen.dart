@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import '../models/corrida.dart';
 import '../models/corrida_asiento.dart';
 import '../models/pasajero_compra.dart';
@@ -24,10 +25,9 @@ class AsientosPlatPlus extends StatefulWidget {
 }
 
 class _AsientosPlatPlusState extends State<AsientosPlatPlus> {
-  int?    seleccionadoNum;
+  int? seleccionadoNum;
   String? seleccionadoClave;
 
-  // numero -> CorridaAsiento
   Map<int, CorridaAsiento> _asientosMap = {};
   bool _cargando = true;
 
@@ -46,7 +46,7 @@ class _AsientosPlatPlusState extends State<AsientosPlatPlus> {
       }
       setState(() {
         _asientosMap = mapa;
-        _cargando    = false;
+        _cargando = false;
       });
     } catch (e) {
       setState(() => _cargando = false);
@@ -64,14 +64,13 @@ class _AsientosPlatPlusState extends State<AsientosPlatPlus> {
     return a.estado == 'OCUPADO' || a.estado == 'RESERVADO';
   }
 
-  // También bloquear asientos ya seleccionados por pasajeros anteriores
   bool _yaSeleccionado(int numero) {
     return widget.pasajerosAcumulados.any((p) => p.asientoNumero == numero);
   }
 
   Widget asiento(int numero) {
-    final ocupado     = _estaOcupado(numero);
-    final yaElegido   = _yaSeleccionado(numero);
+    final ocupado = _estaOcupado(numero);
+    final yaElegido = _yaSeleccionado(numero);
     final seleccionado = seleccionadoNum == numero;
 
     Color color = Colors.green;
@@ -82,16 +81,18 @@ class _AsientosPlatPlusState extends State<AsientosPlatPlus> {
       onTap: () {
         if (ocupado || yaElegido) return;
         setState(() {
-          seleccionadoNum   = numero;
+          seleccionadoNum = numero;
           seleccionadoClave = _asientosMap[numero]?.asiento;
         });
       },
       child: Container(
-        width: 40, height: 40,
+        width: 40,
+        height: 40,
         decoration: BoxDecoration(color: color, shape: BoxShape.circle),
         alignment: Alignment.center,
         child: Text("$numero",
-            style: const TextStyle(fontSize: 15, color: Colors.white, fontWeight: FontWeight.bold)),
+            style: const TextStyle(
+                fontSize: 15, color: Colors.white, fontWeight: FontWeight.bold)),
       ),
     );
   }
@@ -103,14 +104,25 @@ class _AsientosPlatPlusState extends State<AsientosPlatPlus> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           const SizedBox(height: 40),
-          asiento(a), const SizedBox(width: 10),
+          asiento(a),
+          const SizedBox(width: 10),
           asiento(b),
           const SizedBox(width: 90),
-          asiento(c), const SizedBox(width: 10),
+          asiento(c),
+          const SizedBox(width: 10),
           asiento(d),
         ],
       ),
     );
+  }
+
+  String _formatHora(String hora) {
+    try {
+      final parsed = DateFormat("HH:mm:ss").parse(hora);
+      return DateFormat("HH:mm").format(parsed);
+    } catch (e) {
+      return hora;
+    }
   }
 
   @override
@@ -119,20 +131,21 @@ class _AsientosPlatPlusState extends State<AsientosPlatPlus> {
       backgroundColor: const Color(0xFFF4F6FB),
       body: SafeArea(
         child: _cargando
-          ? const Center(child: CircularProgressIndicator(color: Color(0xFF2A5CAA)))
-          : Column(
-              children: [
-                const SizedBox(height: 10),
-                _cardViaje(),
-                const SizedBox(height: 15),
-                _cardEstados(),
-                const SizedBox(height: 15),
-                Expanded(child: SingleChildScrollView(child: _mapaBus())),
-                const SizedBox(height: 10),
-                _botones(),
-                const SizedBox(height: 20),
-              ],
-            ),
+            ? const Center(
+                child: CircularProgressIndicator(color: Color(0xFF2A5CAA)))
+            : Column(
+                children: [
+                  const SizedBox(height: 10),
+                  _cardViaje(),
+                  const SizedBox(height: 15),
+                  _cardEstados(),
+                  const SizedBox(height: 15),
+                  Expanded(child: SingleChildScrollView(child: _mapaBus())),
+                  const SizedBox(height: 10),
+                  _botones(),
+                  const SizedBox(height: 20),
+                ],
+              ),
       ),
     );
   }
@@ -149,11 +162,20 @@ class _AsientosPlatPlusState extends State<AsientosPlatPlus> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(widget.corrida.fechaSalida,
-                    style: const TextStyle(fontSize: 12, color: Color(0xFF2A5CAA), fontWeight: FontWeight.w600)),
+                    style: const TextStyle(
+                        fontSize: 12,
+                        color: Color(0xFF2A5CAA),
+                        fontWeight: FontWeight.w600)),
                 const Text("PLATINO",
-                    style: TextStyle(fontSize: 16, color: Color(0xFF2A5CAA), fontWeight: FontWeight.w600)),
+                    style: TextStyle(
+                        fontSize: 16,
+                        color: Color(0xFF2A5CAA),
+                        fontWeight: FontWeight.w600)),
                 Text(widget.corrida.fechaLlegada,
-                    style: const TextStyle(fontSize: 12, color: Color(0xFF2A5CAA), fontWeight: FontWeight.w600)),
+                    style: const TextStyle(
+                        fontSize: 12,
+                        color: Color(0xFF2A5CAA),
+                        fontWeight: FontWeight.w600)),
               ],
             ),
             const SizedBox(height: 5),
@@ -172,12 +194,21 @@ class _AsientosPlatPlusState extends State<AsientosPlatPlus> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(widget.corrida.horaSalida,
-                    style: const TextStyle(fontSize: 13, color: Color(0xFF2A5CAA), fontWeight: FontWeight.w600)),
+                Text(_formatHora(widget.corrida.horaSalida),
+                    style: const TextStyle(
+                        fontSize: 13,
+                        color: Color(0xFF2A5CAA),
+                        fontWeight: FontWeight.w600)),
                 Text("Autobús: ${widget.corrida.autobus}",
-                    style: const TextStyle(fontSize: 13, color: Color(0xFF2A5CAA), fontWeight: FontWeight.bold)),
-                Text(widget.corrida.horaLlegada,
-                    style: const TextStyle(fontSize: 13, color: Color(0xFF2A5CAA), fontWeight: FontWeight.w600)),
+                    style: const TextStyle(
+                        fontSize: 13,
+                        color: Color(0xFF2A5CAA),
+                        fontWeight: FontWeight.bold)),
+                Text(_formatHora(widget.corrida.horaLlegada),
+                    style: const TextStyle(
+                        fontSize: 13,
+                        color: Color(0xFF2A5CAA),
+                        fontWeight: FontWeight.w600)),
               ],
             ),
             const SizedBox(height: 5),
@@ -229,9 +260,15 @@ class _AsientosPlatPlusState extends State<AsientosPlatPlus> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const SizedBox(height: 20),
-                fila(1,2,3,4), fila(5,6,7,8), fila(9,10,11,12),
-                fila(13,14,15,16), fila(17,18,19,20), fila(21,22,23,24),
-                fila(25,26,27,28), fila(29,30,31,32), fila(33,34,35,36),
+                fila(1, 2, 3, 4),
+                fila(5, 6, 7, 8),
+                fila(9, 10, 11, 12),
+                fila(13, 14, 15, 16),
+                fila(17, 18, 19, 20),
+                fila(21, 22, 23, 24),
+                fila(25, 26, 27, 28),
+                fila(29, 30, 31, 32),
+                fila(33, 34, 35, 36),
               ],
             ),
           ],
@@ -246,7 +283,8 @@ class _AsientosPlatPlusState extends State<AsientosPlatPlus> {
       child: Row(
         children: [
           Container(
-            width: 65, height: 65,
+            width: 65,
+            height: 65,
             decoration: BoxDecoration(color: const Color(0xFF2A5CAA), borderRadius: BorderRadius.circular(25)),
             child: IconButton(
               onPressed: () => Navigator.pop(context),
@@ -273,17 +311,17 @@ class _AsientosPlatPlusState extends State<AsientosPlatPlus> {
                     context,
                     MaterialPageRoute(
                       builder: (_) => RegistrarPasajero(
-                        totalPasajeros:      widget.totalPasajeros,
-                        pasajeroActual:      widget.pasajeroActual,
-                        asientoClave:        seleccionadoClave!,
-                        asientoNumero:       seleccionadoNum!,
-                        corrida:             widget.corrida,
+                        totalPasajeros: widget.totalPasajeros,
+                        pasajeroActual: widget.pasajeroActual,
+                        asientoClave: seleccionadoClave!,
+                        asientoNumero: seleccionadoNum!,
+                        corrida: widget.corrida,
                         pasajerosAcumulados: widget.pasajerosAcumulados,
                       ),
                     ),
                   ).then((_) {
                     setState(() {
-                      seleccionadoNum   = null;
+                      seleccionadoNum = null;
                       seleccionadoClave = null;
                     });
                   });

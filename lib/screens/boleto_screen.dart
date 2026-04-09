@@ -1,63 +1,81 @@
 import 'package:flutter/material.dart';
 import 'shared_appbar.dart';
+import '../models/reservacion_response.dart';
 
-class BoletoScreen extends StatefulWidget {
-  const BoletoScreen({super.key});
+class BoletoScreen extends StatelessWidget {
+  final BoletoResponse boleto;
+  final ReservacionResponse reservacion;
 
-  @override
-  State<BoletoScreen> createState() => _BoletoScreenState();
-}
+  const BoletoScreen({
+    super.key,
+    required this.boleto,
+    required this.reservacion,
+  });
 
-class _BoletoScreenState extends State<BoletoScreen> {
+  // Función para mostrar HH:MM (sin segundos)
+  String _formatearHora(String hora) {
+    final partes = hora.split(":");
+    if (partes.length >= 2) {
+      return "${partes[0]}:${partes[1]}";
+    }
+    return hora;
+  }
+
   @override
   Widget build(BuildContext context) {
+    // Calculos de descuento
+    final double porcentajeDesc = boleto.tipoPasajero == 'NINO' || boleto.tipoPasajero == '3DAD' ? 50.0 : 0.0;
+    final double tarifaBase     = boleto.precio / (1 - porcentajeDesc / 100);
+    final double montoDescuento = tarifaBase * (porcentajeDesc / 100);
+
     return Scaffold(
       backgroundColor: const Color(0xFFF2F2F7),
       appBar: SharedAppBar(),
       body: Padding(
-        padding: EdgeInsets.symmetric(vertical: 12.5, horizontal: 32),
+        padding: const EdgeInsets.symmetric(vertical: 12.5, horizontal: 32),
         child: Column(
           children: [
             Row(
               children: [
-                SizedBox(width: 14),
+                const SizedBox(width: 14),
                 Image.asset(
                   'assets/images/Logo TCN azul.png',
-                  height: 140,
-                  width: 140,
+                  height: 110,
+                  width: 110,
                 ),
-                SizedBox(width: 42),
+                const SizedBox(width: 42),
                 Column(
                   children: [
-                    Text(
+                    const Text(
                       'No. Reservación',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        fontSize: 14,
+                        fontSize: 16,
                         color: Colors.black,
                       ),
                     ),
                     Text(
-                      '001',
-                      style: TextStyle(
+                      '${reservacion.numero}',
+                      style: const TextStyle(
                         fontWeight: FontWeight.bold,
-                        fontSize: 14,
+                        fontSize: 16,
                         color: Color(0xFF0961C6),
                       ),
                     ),
-                    Text(
+                    const SizedBox(height: 10),
+                    const Text(
                       'No. Boleto',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        fontSize: 14,
+                        fontSize: 16,
                         color: Colors.black,
                       ),
                     ),
                     Text(
-                      '1001',
-                      style: TextStyle(
+                      '${boleto.numero}',
+                      style: const TextStyle(
                         fontWeight: FontWeight.bold,
-                        fontSize: 14,
+                        fontSize: 16,
                         color: Color(0xFF0961C6),
                       ),
                     ),
@@ -65,9 +83,9 @@ class _BoletoScreenState extends State<BoletoScreen> {
                 ),
               ],
             ),
-            SizedBox(height: 18),
-            Container(color: Color(0xFF0961C6), width: 300, height: 5),
-            SizedBox(height: 17),
+            const SizedBox(height: 18),
+            Container(color: const Color(0xFF0961C6), width: 300, height: 5),
+            const SizedBox(height: 17),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8.0),
               child: Row(
@@ -77,7 +95,7 @@ class _BoletoScreenState extends State<BoletoScreen> {
                     alignment: Alignment.centerLeft,
                     child: Column(
                       children: [
-                        Text(
+                        const Text(
                           'Salida',
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
@@ -86,15 +104,15 @@ class _BoletoScreenState extends State<BoletoScreen> {
                           ),
                         ),
                         Text(
-                          '22/02/2026',
-                          style: TextStyle(
+                          reservacion.fechaSalida,
+                          style: const TextStyle(
                             fontSize: 14,
                             color: Color(0xFF0961C6),
                           ),
                         ),
                         Text(
-                          '12:00',
-                          style: TextStyle(
+                          _formatearHora(reservacion.horaSalida),
+                          style: const TextStyle(
                             fontSize: 14,
                             color: Color(0xFF0961C6),
                           ),
@@ -106,7 +124,7 @@ class _BoletoScreenState extends State<BoletoScreen> {
                     alignment: Alignment.centerRight,
                     child: Column(
                       children: [
-                        Text(
+                        const Text(
                           'Llegada',
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
@@ -115,15 +133,15 @@ class _BoletoScreenState extends State<BoletoScreen> {
                           ),
                         ),
                         Text(
-                          '22/02/2026',
-                          style: TextStyle(
+                          reservacion.fechaLlegada,
+                          style: const TextStyle(
                             fontSize: 14,
                             color: Color(0xFF0961C6),
                           ),
                         ),
                         Text(
-                          '2:00',
-                          style: TextStyle(
+                          _formatearHora(reservacion.horaLlegada),
+                          style: const TextStyle(
                             fontSize: 14,
                             color: Color(0xFF0961C6),
                           ),
@@ -134,14 +152,14 @@ class _BoletoScreenState extends State<BoletoScreen> {
                 ],
               ),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 14),
             Align(
               alignment: Alignment.center,
               child: Container(
                 width: 313,
                 height: 82,
                 decoration: BoxDecoration(
-                  color: Color.fromARGB(255, 245, 240, 240),
+                  color: const Color.fromARGB(255, 245, 240, 240),
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(color: const Color(0xFF969090), width: 3),
                 ),
@@ -155,7 +173,7 @@ class _BoletoScreenState extends State<BoletoScreen> {
                     children: [
                       Column(
                         children: [
-                          Text(
+                          const Text(
                             'Origen',
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
@@ -163,10 +181,11 @@ class _BoletoScreenState extends State<BoletoScreen> {
                               color: Colors.black,
                             ),
                           ),
+                          const SizedBox(height: 7),
                           Text(
-                            'Tijuana',
-                            style: TextStyle(
-                              fontSize: 14,
+                            reservacion.ciudadOrigen,
+                            style: const TextStyle(
+                              fontSize: 17,
                               color: Color(0xFF0961C6),
                               fontWeight: FontWeight.bold,
                             ),
@@ -175,7 +194,7 @@ class _BoletoScreenState extends State<BoletoScreen> {
                       ),
                       Column(
                         children: [
-                          Text(
+                          const Text(
                             'Destino',
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
@@ -183,10 +202,11 @@ class _BoletoScreenState extends State<BoletoScreen> {
                               color: Colors.black,
                             ),
                           ),
+                          const SizedBox(height: 7),
                           Text(
-                            'Hermosillo',
-                            style: TextStyle(
-                              fontSize: 14,
+                            reservacion.ciudadDestino,
+                            style: const TextStyle(
+                              fontSize: 17,
                               color: Color(0xFF0961C6),
                               fontWeight: FontWeight.bold,
                             ),
@@ -198,24 +218,24 @@ class _BoletoScreenState extends State<BoletoScreen> {
                 ),
               ),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 15),
             Align(
               alignment: Alignment.center,
               child: Column(
                 children: [
-                  Text(
+                  const Text(
                     'Pasajero',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      fontSize: 12,
+                      fontSize: 14,
                       color: Colors.black,
                     ),
                   ),
                   Text(
-                    'Hector Armando Figueroa',
-                    style: TextStyle(
+                    boleto.nombrePasajero,
+                    style: const TextStyle(
                       fontWeight: FontWeight.normal,
-                      fontSize: 18,
+                      fontSize: 19,
                       color: Color(0xff0961C6),
                       fontStyle: FontStyle.italic,
                     ),
@@ -223,9 +243,9 @@ class _BoletoScreenState extends State<BoletoScreen> {
                 ],
               ),
             ),
-            SizedBox(height: 10),
-            Container(color: Color(0xFF0961C6), width: 300, height: 5),
-            SizedBox(height: 10),
+            const SizedBox(height: 20),
+            Container(color: const Color(0xFF0961C6), width: 300, height: 5),
+            const SizedBox(height: 15),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8),
               child: Row(
@@ -233,7 +253,7 @@ class _BoletoScreenState extends State<BoletoScreen> {
                 children: [
                   Column(
                     children: [
-                      Text(
+                      const Text(
                         'No. Asiento',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
@@ -242,14 +262,14 @@ class _BoletoScreenState extends State<BoletoScreen> {
                         ),
                       ),
                       Text(
-                        '7',
-                        style: TextStyle(
+                        '${boleto.asientoNumero}',
+                        style: const TextStyle(
                           fontSize: 14,
                           color: Color(0xFF0961C6),
                         ),
                       ),
-                      SizedBox(height: 10),
-                      Text(
+                      const SizedBox(height: 10),
+                      const Text(
                         'Autobús',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
@@ -258,14 +278,14 @@ class _BoletoScreenState extends State<BoletoScreen> {
                         ),
                       ),
                       Text(
-                        '510',
-                        style: TextStyle(
+                        '${reservacion.autobus}',
+                        style: const TextStyle(
                           fontSize: 14,
                           color: Color(0xFF0961C6),
                         ),
                       ),
-                      SizedBox(height: 10),
-                      Text(
+                      const SizedBox(height: 10),
+                      const Text(
                         'Tipo pasajero',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
@@ -274,18 +294,18 @@ class _BoletoScreenState extends State<BoletoScreen> {
                         ),
                       ),
                       Text(
-                        'Normal',
-                        style: TextStyle(
+                        boleto.tipoPasajeroDesc,
+                        style: const TextStyle(
                           fontSize: 14,
                           color: Color(0xFF0961C6),
                         ),
                       ),
-                      SizedBox(height: 67),
+                      const SizedBox(height: 67),
                     ],
                   ),
                   Column(
                     children: [
-                      Text(
+                      const Text(
                         'Precio boleto',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
@@ -294,14 +314,14 @@ class _BoletoScreenState extends State<BoletoScreen> {
                         ),
                       ),
                       Text(
-                        '\$1650',
-                        style: TextStyle(
+                        '\$${boleto.precio.toStringAsFixed(2)}',
+                        style: const TextStyle(
                           fontSize: 14,
                           color: Color(0xFF0961C6),
                         ),
                       ),
-                      SizedBox(height: 10),
-                      Text(
+                      const SizedBox(height: 10),
+                      const Text(
                         'Descuento',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
@@ -310,14 +330,14 @@ class _BoletoScreenState extends State<BoletoScreen> {
                         ),
                       ),
                       Text(
-                        '0%',
-                        style: TextStyle(
+                        '${porcentajeDesc.toStringAsFixed(0)}%',
+                        style: const TextStyle(
                           fontSize: 14,
                           color: Color(0xFF0961C6),
                         ),
                       ),
-                      SizedBox(height: 10),
-                      Text(
+                      const SizedBox(height: 10),
+                      const Text(
                         'Total descuento',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
@@ -326,17 +346,17 @@ class _BoletoScreenState extends State<BoletoScreen> {
                         ),
                       ),
                       Text(
-                        '\$0',
-                        style: TextStyle(
+                        '\$${montoDescuento.toStringAsFixed(2)}',
+                        style: const TextStyle(
                           fontSize: 14,
                           color: Color(0xFF0961C6),
                         ),
                       ),
-                      SizedBox(height: 10),
+                      const SizedBox(height: 10),
                       Container(
                         width: 173,
                         decoration: BoxDecoration(
-                          color: Color.fromARGB(255, 245, 240, 240),
+                          color: const Color.fromARGB(255, 245, 240, 240),
                           borderRadius: BorderRadius.circular(20),
                           border: Border.all(
                             color: const Color(0xFF969090),
@@ -352,9 +372,10 @@ class _BoletoScreenState extends State<BoletoScreen> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                'Total: \$1650',
-                                style: TextStyle(
+                                'Total: \$${boleto.precio.toStringAsFixed(2)}',
+                                style: const TextStyle(
                                   fontSize: 14,
+                                  fontWeight: FontWeight.bold,
                                   color: Colors.black,
                                 ),
                               ),
