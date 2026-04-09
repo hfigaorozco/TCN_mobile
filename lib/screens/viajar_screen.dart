@@ -395,7 +395,7 @@ class _ViajarScreenState extends State<ViajarScreen> {
         ),
       ),
 
-      bottomNavigationBar: SharedNavBar(selectedIndex: 0),
+      bottomNavigationBar: SharedNavbar(selectedIndex: 0),
     );
   }
 }

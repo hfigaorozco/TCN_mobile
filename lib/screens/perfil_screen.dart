@@ -363,7 +363,7 @@ class _PerfilScreenState extends State<PerfilScreen> {
           ],
         ),
       ),
-      bottomNavigationBar: const SharedNavBar(selectedIndex: 2),
+      bottomNavigationBar: const SharedNavbar(selectedIndex: 2),
     );
   }
 }

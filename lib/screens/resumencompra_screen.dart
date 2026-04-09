@@ -15,7 +15,7 @@ class _ResumenCompraScreenState extends State<ResumenCompraScreen> {
     return Scaffold(
       backgroundColor: const Color(0xFFF2F2F7),
       appBar: const SharedAppBar(),
-      bottomNavigationBar: const SharedNavBar(selectedIndex: 1),
+      bottomNavigationBar: const SharedNavbar(selectedIndex: 1),
       body: Column(
         children: [
           Align(

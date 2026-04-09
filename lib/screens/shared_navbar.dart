@@ -7,16 +7,26 @@ import 'perfil_screen.dart';
 import 'login_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class SharedNavBar extends StatelessWidget {
+class SharedNavbar extends StatefulWidget {
   final int selectedIndex;
+  const SharedNavbar({super.key, required this.selectedIndex});
+
+  @override
+  State<SharedNavbar> createState() => _SharedNavbarState();
+}
+
+class _SharedNavbarState extends State<SharedNavbar> {
+  @override
+  void initState() {
+    super.initState();
+    _obtenerSesion();
+  }
 
   Future<String?> _obtenerSesion() async {
     final prefs = await SharedPreferences.getInstance();
     final _session = prefs.getString('auth_token');
     return _session;
   }
-
-  const SharedNavBar({super.key, required this.selectedIndex});
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +59,7 @@ class SharedNavBar extends StatelessWidget {
     String label,
     int index,
   ) {
-    final bool isSelected = selectedIndex == index;
+    final bool isSelected = widget.selectedIndex == index;
 
     return GestureDetector(
       onTap: () async {
