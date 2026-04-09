@@ -2,11 +2,11 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import 'shared_appbar.dart';
 import 'shared_navbar.dart';
 import 'cambiarcontra_screen.dart';
 import 'login_screen.dart';
+import '../services/api_service_login_signin.dart';
 
 class PerfilScreen extends StatefulWidget {
   const PerfilScreen({super.key});
@@ -16,15 +16,28 @@ class PerfilScreen extends StatefulWidget {
 }
 
 class _PerfilScreenState extends State<PerfilScreen> {
-
-  final supabase = Supabase.instance.client;
   String? _fotoPath;
   bool _cargandoFoto = false;
+  int? _user;
+  String? _nombre;
+  String? _correo;
 
   @override
   void initState() {
     super.initState();
     _cargarFotoLocal();
+    _cargarDatosUsuario();
+  }
+
+  Future<void> _cargarDatosUsuario() async {
+    final api = ApiServiceLoginSignin();
+    final datos = await api.obtenerDatosUsuario();
+
+    setState(() {
+      _user = datos['id'];
+      _nombre = datos['nombre'];
+      _correo = datos['email'];
+    });
   }
 
   Future<void> _cargarFotoLocal() async {
@@ -87,7 +100,10 @@ class _PerfilScreenState extends State<PerfilScreen> {
             ),
             const SizedBox(height: 16),
             ListTile(
-              leading: const Icon(Icons.photo_library_outlined, color: Color(0xFF1565C0)),
+              leading: const Icon(
+                Icons.photo_library_outlined,
+                color: Color(0xFF1565C0),
+              ),
               title: const Text('Elegir de la galería'),
               onTap: () {
                 Navigator.pop(context);
@@ -95,7 +111,10 @@ class _PerfilScreenState extends State<PerfilScreen> {
               },
             ),
             ListTile(
-              leading: const Icon(Icons.camera_alt_outlined, color: Color(0xFF1565C0)),
+              leading: const Icon(
+                Icons.camera_alt_outlined,
+                color: Color(0xFF1565C0),
+              ),
               title: const Text('Tomar foto'),
               onTap: () {
                 Navigator.pop(context);
@@ -110,23 +129,18 @@ class _PerfilScreenState extends State<PerfilScreen> {
   }
 
   Future<void> logout(BuildContext context) async {
-
-    await supabase.auth.signOut();
+    final api = ApiServiceLoginSignin();
+    await api.quitarToken();
 
     Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(builder: (context) => LogInScreen()),
-      (route) => false
+      (route) => false,
     );
-
   }
 
   @override
   Widget build(BuildContext context) {
-    final user = supabase.auth.currentUser;
-    final nombre = user?.userMetadata?['name'] ?? 'Usuario';
-    final correo = user?.email ?? '';
-
     return Scaffold(
       backgroundColor: const Color(0xFFF2F2F7),
       appBar: const SharedAppBar(),
@@ -134,7 +148,6 @@ class _PerfilScreenState extends State<PerfilScreen> {
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-
             Container(
               width: double.infinity,
               padding: const EdgeInsets.symmetric(vertical: 10),
@@ -178,7 +191,6 @@ class _PerfilScreenState extends State<PerfilScreen> {
               ),
               child: Column(
                 children: [
-
                   // FOTO DE PERFIL
                   Stack(
                     alignment: Alignment.bottomRight,
@@ -202,18 +214,15 @@ class _PerfilScreenState extends State<PerfilScreen> {
                                   ),
                                 )
                               : _fotoPath != null
-                                  ? Image.file(
-                                      File(_fotoPath!),
-                                      fit: BoxFit.cover,
-                                    )
-                                  : const ColoredBox(
-                                      color: Color(0xFF1565C0),
-                                      child: Icon(
-                                        Icons.person,
-                                        size: 52,
-                                        color: Colors.white,
-                                      ),
-                                    ),
+                              ? Image.file(File(_fotoPath!), fit: BoxFit.cover)
+                              : const ColoredBox(
+                                  color: Color(0xFF1565C0),
+                                  child: Icon(
+                                    Icons.person,
+                                    size: 52,
+                                    color: Colors.white,
+                                  ),
+                                ),
                         ),
                       ),
                       GestureDetector(
@@ -253,11 +262,15 @@ class _PerfilScreenState extends State<PerfilScreen> {
 
                   const Text(
                     'Usuario:',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 19, color: Colors.grey),
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 19,
+                      color: Colors.grey,
+                    ),
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    nombre,
+                    _nombre ?? 'Usuario',
                     style: const TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.bold,
@@ -268,11 +281,15 @@ class _PerfilScreenState extends State<PerfilScreen> {
 
                   const Text(
                     'Correo:',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 19, color: Colors.grey),
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 19,
+                      color: Colors.grey,
+                    ),
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    correo,
+                    _correo ?? 'Correo',
                     style: const TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.bold,
@@ -340,16 +357,13 @@ class _PerfilScreenState extends State<PerfilScreen> {
                       ),
                     ),
                   ),
-
-
                 ],
               ),
             ),
-
           ],
         ),
       ),
-      bottomNavigationBar: const SharedNavBar(selectedIndex: 2),
+      bottomNavigationBar: const SharedNavbar(selectedIndex: 2),
     );
   }
 }
