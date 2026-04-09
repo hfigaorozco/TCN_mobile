@@ -11,9 +11,6 @@ class CorridasScreen extends StatefulWidget {
   final String destino;
   final DateTime fecha;
 
-<<<<<<< HEAD
-  const CorridasScreen({super.key, required this.totalPasajeros});
-=======
   const CorridasScreen({
     super.key,
     required this.totalPasajeros,
@@ -21,17 +18,12 @@ class CorridasScreen extends StatefulWidget {
     required this.destino,
     required this.fecha,
   });
->>>>>>> cf4e63c546ccc370965198365895c28f7c423912
 
   @override
   _CorridasScreenState createState() => _CorridasScreenState();
 }
 
 class _CorridasScreenState extends State<CorridasScreen> {
-<<<<<<< HEAD
-  @override
-  Widget build(BuildContext context) {
-=======
   List<Corrida> _corridas = [];
   bool _cargando = true;
   String? _error;
@@ -82,7 +74,6 @@ class _CorridasScreenState extends State<CorridasScreen> {
   Widget build(BuildContext context) {
     final fechaStr = '${widget.fecha.month}/${widget.fecha.day}';
 
->>>>>>> cf4e63c546ccc370965198365895c28f7c423912
     return Scaffold(
       backgroundColor: const Color(0xFFF4F6FB),
       appBar: const SharedAppBar(),
@@ -99,20 +90,6 @@ class _CorridasScreenState extends State<CorridasScreen> {
             const SizedBox(height: 20),
 
             Expanded(
-<<<<<<< HEAD
-              child: ListView(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                children: [
-                  _cardCorrida(true),
-                  const SizedBox(height: 15),
-
-                  _cardCorrida(false),
-                  const SizedBox(height: 15),
-
-                  _cardCorrida(true),
-                ],
-              ),
-=======
               child: _cargando
                   ? const Center(
                       child: CircularProgressIndicator(
@@ -139,7 +116,6 @@ class _CorridasScreenState extends State<CorridasScreen> {
                               itemBuilder: (_, index) =>
                                   _cardCorrida(_corridas[index]),
                             ),
->>>>>>> cf4e63c546ccc370965198365895c28f7c423912
             ),
 
             const SizedBox(height: 10),
@@ -173,12 +149,7 @@ class _CorridasScreenState extends State<CorridasScreen> {
     );
   }
 
-<<<<<<< HEAD
-  /// TARJETA ORIGEN / DESTINO
-  Widget _cardBusqueda() {
-=======
   Widget _cardBusqueda(String fechaStr) {
->>>>>>> cf4e63c546ccc370965198365895c28f7c423912
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: _boxDecoration(),
@@ -186,25 +157,6 @@ class _CorridasScreenState extends State<CorridasScreen> {
         children: [
           Row(
             children: [
-<<<<<<< HEAD
-              const Text(
-                "Origen",
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-              ),
-
-              const SizedBox(width: 10),
-
-              Expanded(
-                child: Container(height: 3, color: const Color(0xFF2A5CAA)),
-              ),
-
-              const SizedBox(width: 10),
-
-              const Text(
-                "Destino",
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-              ),
-=======
               Text(widget.origen,
                   style: const TextStyle(
                       fontWeight: FontWeight.bold, fontSize: 15)),
@@ -220,37 +172,15 @@ class _CorridasScreenState extends State<CorridasScreen> {
               Text(widget.destino,
                   style: const TextStyle(
                       fontWeight: FontWeight.bold, fontSize: 15)),
->>>>>>> cf4e63c546ccc370965198365895c28f7c423912
             ],
           ),
           const SizedBox(height: 12),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-<<<<<<< HEAD
-              Row(
-                children: const [
-                  Text("Fecha "),
-                  Text(
-                    "22/03/2026",
-                    style: TextStyle(
-                      color: Color(0xFF2A5CAA),
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
-              ),
-
-              Row(
-                children: [
-                  const Text("Pasajeros "),
-                  Text(
-                    "${widget.totalPasajeros}",
-=======
               Row(children: [
                 const Text("Fecha "),
                 Text(fechaStr,
->>>>>>> cf4e63c546ccc370965198365895c28f7c423912
                     style: const TextStyle(
                         color: Color(0xFF2A5CAA),
                         fontWeight: FontWeight.bold)),
@@ -269,15 +199,6 @@ class _CorridasScreenState extends State<CorridasScreen> {
     );
   }
 
-<<<<<<< HEAD
-  /// TARJETA CORRIDA
-  Widget _cardCorrida(bool azul) {
-    Color colorPrincipal = azul ? const Color(0xFF2A5CAA) : Colors.orange;
-
-    return GestureDetector(
-      onTap: () {
-        if (azul) {
-=======
   Widget _cardCorrida(Corrida corrida) {
     final tipo = corrida.tipoAutobus?.trim().toUpperCase();
 
@@ -290,7 +211,6 @@ class _CorridasScreenState extends State<CorridasScreen> {
     return GestureDetector(
       onTap: () {
         if (esPlatino) {
->>>>>>> cf4e63c546ccc370965198365895c28f7c423912
           Navigator.push(
             context,
             MaterialPageRoute(
@@ -302,11 +222,7 @@ class _CorridasScreenState extends State<CorridasScreen> {
               ),
             ),
           );
-<<<<<<< HEAD
-        } else {
-=======
         } else if (esPlus) {
->>>>>>> cf4e63c546ccc370965198365895c28f7c423912
           Navigator.push(
             context,
             MaterialPageRoute(
@@ -318,13 +234,10 @@ class _CorridasScreenState extends State<CorridasScreen> {
               ),
             ),
           );
-<<<<<<< HEAD
-=======
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('Tipo de autobús no soportado: $tipo')),
           );
->>>>>>> cf4e63c546ccc370965198365895c28f7c423912
         }
       },
       child: Container(
@@ -333,50 +246,6 @@ class _CorridasScreenState extends State<CorridasScreen> {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-<<<<<<< HEAD
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Fecha",
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: colorPrincipal,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-
-                const SizedBox(height: 6),
-
-                const Text(
-                  "Origen",
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                ),
-
-                const SizedBox(height: 6),
-
-                Text(
-                  "Hora",
-                  style: TextStyle(
-                    fontSize: 18,
-                    color: colorPrincipal,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
-            ),
-
-            Column(
-              children: [
-                Text(
-                  "Servicio",
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: colorPrincipal,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-=======
 
             // IZQUIERDA
             Column(
@@ -411,26 +280,9 @@ class _CorridasScreenState extends State<CorridasScreen> {
                           fontSize: 13,
                           color: colorPrincipal,
                           fontWeight: FontWeight.w600)),
->>>>>>> cf4e63c546ccc370965198365895c28f7c423912
 
                   const SizedBox(height: 6),
 
-<<<<<<< HEAD
-                const Text(
-                  "Autobús",
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                ),
-
-                Text(
-                  "183",
-                  style: TextStyle(
-                    fontSize: 18,
-                    color: colorPrincipal,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
-=======
                   Container(
                     height: 2,
                     color: colorPrincipal,
@@ -448,7 +300,6 @@ class _CorridasScreenState extends State<CorridasScreen> {
                           fontWeight: FontWeight.bold)),
                 ],
               ),
->>>>>>> cf4e63c546ccc370965198365895c28f7c423912
             ),
 
             const SizedBox(width: 10),
@@ -457,34 +308,6 @@ class _CorridasScreenState extends State<CorridasScreen> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-<<<<<<< HEAD
-                Text(
-                  "Fecha",
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: colorPrincipal,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-
-                const SizedBox(height: 6),
-
-                const Text(
-                  "Destino",
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                ),
-
-                const SizedBox(height: 6),
-
-                Text(
-                  "Hora",
-                  style: TextStyle(
-                    fontSize: 18,
-                    color: colorPrincipal,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-=======
                 Text(_formatearFecha(corrida.fechaLlegada),
                     style: TextStyle(
                         fontSize: 12,
@@ -500,7 +323,6 @@ class _CorridasScreenState extends State<CorridasScreen> {
                         fontSize: 14,
                         color: colorPrincipal,
                         fontWeight: FontWeight.bold)),
->>>>>>> cf4e63c546ccc370965198365895c28f7c423912
               ],
             ),
           ],
