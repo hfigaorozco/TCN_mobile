@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import 'registro_screen.dart';
 import 'perfil_screen.dart';
-
-final supabase = Supabase.instance.client;
+import '../services/api_service_login_signin.dart';
+import 'viajar_screen.dart';
 
 class LogInScreen extends StatefulWidget {
   const LogInScreen({super.key});
@@ -13,49 +12,50 @@ class LogInScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LogInScreen> {
-  final emailController = TextEditingController();
-  final passwordController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+  final _apiService = ApiServiceLoginSignin();
+  bool _isLoading = false;
+  String? _errorMessage;
 
-  Future<void> login() async {
-    if (emailController.text.isEmpty || emailController.text.contains(' ')) {
+  Future<void> _login() async {
+    if (_emailController.text.isEmpty ||
+        _emailController.text.contains(' ') ||
+        _passwordController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text(
-            'El correo electrónico no debe estar vacío ni contener espacios',
-          ),
+          content: Text('Ingrese el correo electrónico y contraseña'),
         ),
       );
       return;
-
-    } else if (passwordController.text.isEmpty || passwordController.text.contains(' ')) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(
-            'La contraseña no debe estar vacía ni contener espacios'
-          )
-        ),
-      );
-
     } else {
+      setState(() {
+        _isLoading = true;
+      });
+
       try {
-        await supabase.auth.signInWithPassword(
-          email: emailController.text,
-          password: passwordController.text,
+        final respuesta = await _apiService.login(
+          _emailController.text,
+          _passwordController.text,
         );
-        Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(builder: (_) => const PerfilScreen()),
-          (route) => false,
-        );
-      } on AuthException catch (e) {
-        if (e.message.contains('Invalid login credentials')) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('La contraseña o correo son incorrectos'),
-            ),
+        if (mounted) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => ViajarScreen()),
           );
-          return;
         }
+      } catch (e) {
+        setState(() {
+          _errorMessage = e.toString();
+        });
+
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('$_errorMessage')));
+      } finally {
+        setState(() {
+          _isLoading = false;
+        });
       }
     }
   }
@@ -143,7 +143,7 @@ class _LoginScreenState extends State<LogInScreen> {
                     const SizedBox(height: 10),
 
                     TextField(
-                      controller: emailController,
+                      controller: _emailController,
                       decoration: InputDecoration(
                         labelText: 'Ingresa tu correo electrónico',
                         border: OutlineInputBorder(
@@ -175,7 +175,7 @@ class _LoginScreenState extends State<LogInScreen> {
 
                     TextField(
                       obscureText: true,
-                      controller: passwordController,
+                      controller: _passwordController,
                       decoration: InputDecoration(
                         labelText: 'Ingresa tu contraseña',
                         border: OutlineInputBorder(
@@ -192,7 +192,7 @@ class _LoginScreenState extends State<LogInScreen> {
                     const SizedBox(height: 25),
 
                     ElevatedButton(
-                      onPressed: login,
+                      onPressed: _isLoading ? null : _login,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF0961C6),
                         minimumSize: const Size(double.infinity, 54),

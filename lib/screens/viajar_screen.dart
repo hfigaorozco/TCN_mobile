@@ -3,6 +3,8 @@ import 'Corridas_screen.dart';
 import 'terminales_screen.dart';
 import 'shared_appbar.dart';
 import 'shared_navbar.dart';
+import '../models/ciudad.dart';
+import '../services/ciudad_service.dart';
 
 class ViajarScreen extends StatefulWidget {
   const ViajarScreen({super.key});
@@ -19,15 +21,33 @@ class _ViajarScreenState extends State<ViajarScreen> {
   String? _destino;
   int _cantPasajeros = 1;
 
-  final List<String> ciudades = [
-    'Tijuana',
-    'Ensenada',
-    'Mexicali',
-    'Hermosillo',
-    'Navojoa'
-  ];
+  List<Ciudad> _ciudades = [];
+  bool _cargandoCiudades = true;
 
   DateTime? fechaSeleccionada;
+
+  @override
+  void initState() {
+    super.initState();
+    _cargarCiudades();
+  }
+
+  Future<void> _cargarCiudades() async {
+    try {
+      final ciudades = await CiudadService.obtenerCiudades();
+      setState(() {
+        _ciudades = ciudades;
+        _cargandoCiudades = false;
+      });
+    } catch (e) {
+      setState(() => _cargandoCiudades = false);
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Error al cargar ciudades')),
+        );
+      }
+    }
+  }
 
   Future<void> seleccionarFecha(BuildContext context) async {
     final DateTime hoy = DateTime.now();
@@ -74,17 +94,13 @@ class _ViajarScreenState extends State<ViajarScreen> {
 
   void aumentarPasajeros() {
     if (_cantPasajeros < 10) {
-      setState(() {
-        _cantPasajeros++;
-      });
+      setState(() => _cantPasajeros++);
     }
   }
 
   void disminuirPasajeros() {
     if (_cantPasajeros > 1) {
-      setState(() {
-        _cantPasajeros--;
-      });
+      setState(() => _cantPasajeros--);
     }
   }
 
@@ -145,10 +161,10 @@ class _ViajarScreenState extends State<ViajarScreen> {
     ),
   );
 
-  List<DropdownMenuEntry<String>> get _ciudadEntries => ciudades.map((value) {
+  List<DropdownMenuEntry<String>> get _ciudadEntries => _ciudades.map((ciudad) {
     return DropdownMenuEntry(
-      value: value,
-      label: value,
+      value: ciudad.nombre,
+      label: ciudad.nombre,
       style: ButtonStyle(
         foregroundColor: const WidgetStatePropertyAll(Color(0xFF1565C0)),
         overlayColor: WidgetStatePropertyAll(
@@ -220,32 +236,36 @@ class _ViajarScreenState extends State<ViajarScreen> {
                       children: [
 
                         /// ORIGEN
-                        DropdownMenu<String>(
-                          hintText: "Seleccionar origen",
-                          leadingIcon: const Icon(Icons.location_city, color: Color(0xFF1565C0)),
-                          width: double.infinity,
-                          inputDecorationTheme: _dropdownTheme,
-                          menuStyle: _menuStyle,
-                          dropdownMenuEntries: _ciudadEntries,
-                          onSelected: (value) {
-                            setState(() => _origen = value);
-                          },
-                        ),
+                        _cargandoCiudades
+                          ? const Center(child: CircularProgressIndicator(color: Color(0xFF1565C0)))
+                          : DropdownMenu<String>(
+                              hintText: "Seleccionar origen",
+                              leadingIcon: const Icon(Icons.location_city, color: Color(0xFF1565C0)),
+                              width: double.infinity,
+                              inputDecorationTheme: _dropdownTheme,
+                              menuStyle: _menuStyle,
+                              dropdownMenuEntries: _ciudadEntries,
+                              onSelected: (value) {
+                                setState(() => _origen = value);
+                              },
+                            ),
 
                         const SizedBox(height: 22),
 
                         /// DESTINO
-                        DropdownMenu<String>(
-                          hintText: "Seleccionar destino",
-                          leadingIcon: const Icon(Icons.location_on, color: Color(0xFF1565C0)),
-                          width: double.infinity,
-                          inputDecorationTheme: _dropdownTheme,
-                          menuStyle: _menuStyle,
-                          dropdownMenuEntries: _ciudadEntries,
-                          onSelected: (value) {
-                            setState(() => _destino = value);
-                          },
-                        ),
+                        _cargandoCiudades
+                          ? const SizedBox() // ya muestra el indicador arriba, aquí no repetimos
+                          : DropdownMenu<String>(
+                              hintText: "Seleccionar destino",
+                              leadingIcon: const Icon(Icons.location_on, color: Color(0xFF1565C0)),
+                              width: double.infinity,
+                              inputDecorationTheme: _dropdownTheme,
+                              menuStyle: _menuStyle,
+                              dropdownMenuEntries: _ciudadEntries,
+                              onSelected: (value) {
+                                setState(() => _destino = value);
+                              },
+                            ),
 
                         const SizedBox(height: 22),
 
@@ -343,7 +363,10 @@ class _ViajarScreenState extends State<ViajarScreen> {
                       context,
                       MaterialPageRoute(
                         builder: (context) => CorridasScreen(
-                          totalPasajeros: _cantPasajeros, // 🔥 FIX
+                          totalPasajeros: _cantPasajeros,
+                          origen: _origen!,
+                          destino: _destino!,
+                          fecha: fechaSeleccionada!,
                         ),
                       ),
                     );
@@ -395,7 +418,7 @@ class _ViajarScreenState extends State<ViajarScreen> {
         ),
       ),
 
-      bottomNavigationBar: SharedNavBar(selectedIndex: 0),
+      bottomNavigationBar: SharedNavbar(selectedIndex: 0),
     );
   }
 }
