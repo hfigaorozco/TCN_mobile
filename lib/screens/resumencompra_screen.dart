@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 import '../models/corrida.dart';
 import '../models/pasajero_compra.dart';
 import '../config.dart';
 import 'shared_appbar.dart';
 import 'shared_navbar.dart';
+import 'login_screen.dart';
 
 class ResumenCompraScreen extends StatefulWidget {
   final Corrida corrida;
@@ -26,7 +28,6 @@ class _ResumenCompraScreenState extends State<ResumenCompraScreen> {
 
   static const double IVA_RATE = 0.16;
 
-  // Descuentos por tipo
   final Map<String, double> _descuentos = {
     'REGU': 0.0,
     'NINO': 0.5,
@@ -38,18 +39,38 @@ class _ResumenCompraScreenState extends State<ResumenCompraScreen> {
     return widget.corrida.tarifaBase * (1 - desc);
   }
 
-  double get _subtotal =>
+  double get _total =>
       widget.pasajeros.fold(0.0, (sum, p) => sum + _precioPasajero(p));
 
-  double get _iva => _subtotal * IVA_RATE;
-  double get _total => _subtotal + _iva;
+  double get _subtotal => _total / (1 + IVA_RATE);
+
+  double get _iva => _total - _subtotal;
 
   Future<void> _confirmarCompra() async {
+    final prefs     = await SharedPreferences.getInstance();
+    final token     = prefs.getString('auth_token');
+    final usuarioId = prefs.getInt('id');
+
+    if (token == null || usuarioId == null) {
+      await Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => const LogInScreen()),
+      );
+
+      final prefsPost = await SharedPreferences.getInstance();
+      final tokenPost = prefsPost.getString('auth_token');
+      if (tokenPost == null) return;
+
+      _confirmarCompra();
+      return;
+    }
+
     setState(() => _procesando = true);
 
     try {
       final body = {
         'corrida_id': widget.corrida.numero,
+        'usuario_id': usuarioId,
         'pasajeros': widget.pasajeros.map((p) => p.toJson()).toList(),
       };
 
@@ -62,9 +83,8 @@ class _ResumenCompraScreenState extends State<ResumenCompraScreen> {
       if (response.statusCode == 201) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Compra realizada con éxito')),
+            const SnackBar(content: Text('¡Compra realizada con éxito!')),
           );
-          // Regresar al inicio limpiando el stack
           Navigator.of(context).popUntil((route) => route.isFirst);
         }
       } else {
@@ -86,6 +106,13 @@ class _ResumenCompraScreenState extends State<ResumenCompraScreen> {
     }
   }
 
+  // Nueva función para formatear horas HH:MM
+  String _formatearHora(String hora) {
+    final partes = hora.split(":");
+    if (partes.length >= 2) return "${partes[0]}:${partes[1]}";
+    return hora;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -96,8 +123,6 @@ class _ResumenCompraScreenState extends State<ResumenCompraScreen> {
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-
-            // TITULO
             _card(
               child: const Text(
                 'Resumen de compra',
@@ -108,27 +133,48 @@ class _ResumenCompraScreenState extends State<ResumenCompraScreen> {
 
             const SizedBox(height: 16),
 
-            // DATOS DE LA CORRIDA
             _card(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _seccion("Ruta",
-                    "${widget.corrida.ciudadOrigen} - ${widget.corrida.ciudadDestino}"),
+                  _seccion(
+                    "Ruta",
+                    "${widget.corrida.ciudadOrigen} - ${widget.corrida.ciudadDestino}",
+                  ),
                   const Divider(),
                   Row(
                     children: [
-                      Expanded(child: _seccion("Salida",
-                          "${widget.corrida.fechaSalida}\n${widget.corrida.horaSalida}")),
-                      Expanded(child: _seccion("Llegada",
-                          "${widget.corrida.fechaLlegada}\n${widget.corrida.horaLlegada}")),
+                      Expanded(
+                        child: _seccion(
+                          "Salida",
+                          "${widget.corrida.fechaSalida}\n${_formatearHora(widget.corrida.horaSalida)}",
+                        ),
+                      ),
+                      Expanded(
+                        child: _seccion(
+                          "Llegada",
+                          "${widget.corrida.fechaLlegada}\n${_formatearHora(widget.corrida.horaLlegada)}",
+                        ),
+                      ),
                     ],
                   ),
                   const Divider(),
                   Row(
                     children: [
-                      Expanded(child: _seccion("Autobús", "${widget.corrida.autobus}")),
-                      Expanded(child: _seccion("Servicio", widget.corrida.tipoAutobus == 'PLAT' ? 'PLATINO' : 'PLUS')),
+                      Expanded(
+                        child: _seccion(
+                          "Autobús",
+                          "${widget.corrida.autobus}",
+                        ),
+                      ),
+                      Expanded(
+                        child: _seccion(
+                          "Servicio",
+                          widget.corrida.tipoAutobus == 'PLAT'
+                              ? 'PLATINO'
+                              : 'PLUS',
+                        ),
+                      ),
                     ],
                   ),
                 ],
@@ -137,20 +183,25 @@ class _ResumenCompraScreenState extends State<ResumenCompraScreen> {
 
             const SizedBox(height: 16),
 
-            // PASAJEROS
             ...widget.pasajeros.asMap().entries.map((entry) {
               final i = entry.key;
               final p = entry.value;
               final precio = _precioPasajero(p);
+
               return Padding(
                 padding: const EdgeInsets.only(bottom: 12),
                 child: _card(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text("Pasajero ${i + 1} — Asiento ${p.asientoNumero}",
-                          style: const TextStyle(fontWeight: FontWeight.bold,
-                              fontSize: 16, color: Color(0xFF0961C6))),
+                      Text(
+                        "Pasajero ${i + 1} — Asiento ${p.asientoNumero}",
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                          color: Color(0xFF0961C6),
+                        ),
+                      ),
                       const SizedBox(height: 8),
                       Text("${p.nombre} ${p.apellPat} ${p.apellMat}".trim()),
                       Text("Edad: ${p.edad}"),
@@ -159,9 +210,10 @@ class _ResumenCompraScreenState extends State<ResumenCompraScreen> {
                       Text(
                         "\$${precio.toStringAsFixed(2)} MXN",
                         style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Color(0xFF0961C6),
-                            fontSize: 15),
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF0961C6),
+                          fontSize: 15,
+                        ),
                       ),
                     ],
                   ),
@@ -171,7 +223,6 @@ class _ResumenCompraScreenState extends State<ResumenCompraScreen> {
 
             const SizedBox(height: 4),
 
-            // TOTALES
             _card(
               child: Column(
                 children: [
@@ -185,40 +236,51 @@ class _ResumenCompraScreenState extends State<ResumenCompraScreen> {
 
             const SizedBox(height: 20),
 
-            // BOTON CONFIRMAR
             SizedBox(
               width: double.infinity,
               height: 55,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF0961C6),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(25),
+                  ),
                 ),
                 onPressed: _procesando ? null : _confirmarCompra,
                 child: _procesando
-                  ? const CircularProgressIndicator(color: Colors.white)
-                  : const Text("Confirmar compra",
-                      style: TextStyle(fontSize: 20, color: Colors.white, fontWeight: FontWeight.w600)),
+                    ? const CircularProgressIndicator(color: Colors.white)
+                    : const Text(
+                        "Confirmar compra",
+                        style: TextStyle(
+                          fontSize: 20,
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
               ),
             ),
 
             const SizedBox(height: 12),
 
-            // BOTON CANCELAR
             SizedBox(
               width: double.infinity,
               height: 55,
               child: ElevatedButton.icon(
                 icon: const Icon(Icons.arrow_back, color: Colors.white),
-                label: const Text("Cancelar",
-                    style: TextStyle(fontSize: 18, color: Colors.white)),
+                label: const Text(
+                  "Cancelar",
+                  style: TextStyle(fontSize: 18, color: Colors.white),
+                ),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xFFFF8600),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+                  backgroundColor: const Color(0xFFFF8600),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(25),
+                  ),
                 ),
                 onPressed: _procesando
-                  ? null
-                  : () => Navigator.of(context).popUntil((route) => route.isFirst),
+                    ? null
+                    : () => Navigator.of(context)
+                        .popUntil((route) => route.isFirst),
               ),
             ),
 
@@ -237,7 +299,13 @@ class _ResumenCompraScreenState extends State<ResumenCompraScreen> {
         color: Colors.white,
         borderRadius: BorderRadius.circular(20),
         border: Border.all(color: const Color(0xFFE9EDF6), width: 2),
-        boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 8, offset: Offset(0, 3))],
+        boxShadow: const [
+          BoxShadow(
+            color: Colors.black12,
+            blurRadius: 8,
+            offset: Offset(0, 3),
+          )
+        ],
       ),
       child: child,
     );
@@ -249,9 +317,22 @@ class _ResumenCompraScreenState extends State<ResumenCompraScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(titulo, style: const TextStyle(fontSize: 13, color: Color(0xFF0961C6), fontWeight: FontWeight.w600)),
+          Text(
+            titulo,
+            style: const TextStyle(
+              fontSize: 13,
+              color: Color(0xFF0961C6),
+              fontWeight: FontWeight.w600,
+            ),
+          ),
           const SizedBox(height: 2),
-          Text(valor, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w500)),
+          Text(
+            valor,
+            style: const TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
         ],
       ),
     );
@@ -263,21 +344,32 @@ class _ResumenCompraScreenState extends State<ResumenCompraScreen> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(label, style: TextStyle(
+          Text(
+            label,
+            style: TextStyle(
               fontSize: grande ? 18 : 15,
-              fontWeight: grande ? FontWeight.bold : FontWeight.normal)),
-          Text("\$${monto.toStringAsFixed(2)} MXN",
-              style: TextStyle(
-                  fontSize: grande ? 18 : 15,
-                  fontWeight: grande ? FontWeight.bold : FontWeight.normal,
-                  color: const Color(0xFF0961C6))),
+              fontWeight: grande ? FontWeight.bold : FontWeight.normal,
+            ),
+          ),
+          Text(
+            "\$${monto.toStringAsFixed(2)} MXN",
+            style: TextStyle(
+              fontSize: grande ? 18 : 15,
+              fontWeight: grande ? FontWeight.bold : FontWeight.normal,
+              color: const Color(0xFF0961C6),
+            ),
+          ),
         ],
       ),
     );
   }
 
   String _labelTipo(String codigo) {
-    const labels = {'REGU': 'Regular', 'NINO': 'Niño (50% desc)', '3DAD': '3ra Edad (50% desc)'};
+    const labels = {
+      'REGU': 'Regular',
+      'NINO': 'Niño (50% desc)',
+      '3DAD': '3ra Edad (50% desc)',
+    };
     return labels[codigo] ?? codigo;
   }
 }
