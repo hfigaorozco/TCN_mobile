@@ -92,44 +92,10 @@ class _ResumenCompraScreenState extends State<ResumenCompraScreen> {
       backgroundColor: const Color(0xFFF2F2F7),
       appBar: const SharedAppBar(),
       bottomNavigationBar: const SharedNavbar(selectedIndex: 1),
-<<<<<<< HEAD
-      body: Column(
-        children: [
-          Align(
-            alignment: Alignment.center,
-            child: Container(
-              margin: const EdgeInsets.only(
-                top: 8,
-                left: 13,
-                right: 13,
-              ), // reducido de 13 a 8
-              width: 366,
-              padding: const EdgeInsets.symmetric(
-                vertical: 4,
-                horizontal: 11,
-              ), // reducido de 6 a 4
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: const Color(0xFFE9EDF6), width: 3),
-              ),
-              child: const Text(
-                'Resumen',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontWeight: FontWeight.w700,
-                  color: Colors.black,
-                  fontSize: 26, // reducido de 29 a 26
-                ),
-              ),
-            ),
-          ),
-=======
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
->>>>>>> cf4e63c546ccc370965198365895c28f7c423912
 
             // TITULO
             _card(
