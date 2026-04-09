@@ -13,10 +13,17 @@ class LoginRespuesta {
 
   factory LoginRespuesta.fromJson(Map<String, dynamic> json) {
     return LoginRespuesta(
+<<<<<<< HEAD
       token: json['token'],
       id: json['id'],
       email: json['email'],
       nombre: json['nombre'],
+=======
+      token: json['token'] ?? '',
+      id: json['user_id'] ?? 0,
+      email: json['email'] ?? '',
+      nombre: json['nombre'] ?? '',
+>>>>>>> cf4e63c546ccc370965198365895c28f7c423912
     );
   }
 }

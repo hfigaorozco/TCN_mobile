@@ -1,14 +1,22 @@
 import 'package:flutter/material.dart';
+import '../models/corrida.dart';
+import '../models/corrida_asiento.dart';
+import '../models/pasajero_compra.dart';
+import '../services/asiento_service.dart';
 import 'registropasajeros_screen.dart';
 
 class AsientosPlatPlus extends StatefulWidget {
   final int totalPasajeros;
   final int pasajeroActual;
+  final Corrida corrida;
+  final List<PasajeroCompra> pasajerosAcumulados;
 
   const AsientosPlatPlus({
     super.key,
     required this.totalPasajeros,
     required this.pasajeroActual,
+    required this.corrida,
+    required this.pasajerosAcumulados,
   });
 
   @override
@@ -16,75 +24,90 @@ class AsientosPlatPlus extends StatefulWidget {
 }
 
 class _AsientosPlatPlusState extends State<AsientosPlatPlus> {
+  int?    seleccionadoNum;
+  String? seleccionadoClave;
 
-  int? seleccionado;
+  // numero -> CorridaAsiento
+  Map<int, CorridaAsiento> _asientosMap = {};
+  bool _cargando = true;
 
-  List<int> ocupados = [7, 12, 18];
+  @override
+  void initState() {
+    super.initState();
+    _cargarAsientos();
+  }
+
+  Future<void> _cargarAsientos() async {
+    try {
+      final lista = await AsientoService.obtenerAsientos(widget.corrida.numero);
+      final Map<int, CorridaAsiento> mapa = {};
+      for (final a in lista) {
+        mapa[a.numero] = a;
+      }
+      setState(() {
+        _asientosMap = mapa;
+        _cargando    = false;
+      });
+    } catch (e) {
+      setState(() => _cargando = false);
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Error al cargar asientos')),
+        );
+      }
+    }
+  }
+
+  bool _estaOcupado(int numero) {
+    final a = _asientosMap[numero];
+    if (a == null) return false;
+    return a.estado == 'OCUPADO' || a.estado == 'RESERVADO';
+  }
+
+  // También bloquear asientos ya seleccionados por pasajeros anteriores
+  bool _yaSeleccionado(int numero) {
+    return widget.pasajerosAcumulados.any((p) => p.asientoNumero == numero);
+  }
 
   Widget asiento(int numero) {
+    final ocupado     = _estaOcupado(numero);
+    final yaElegido   = _yaSeleccionado(numero);
+    final seleccionado = seleccionadoNum == numero;
 
     Color color = Colors.green;
-
-    if (ocupados.contains(numero)) {
-      color = Colors.grey;
-    }
-
-    if (seleccionado == numero) {
-      color = const Color(0xFF2A5CAA);
-    }
+    if (ocupado || yaElegido) color = Colors.grey;
+    if (seleccionado) color = const Color(0xFF2A5CAA);
 
     return GestureDetector(
       onTap: () {
-
-        if (ocupados.contains(numero)) return;
-
+        if (ocupado || yaElegido) return;
         setState(() {
-          seleccionado = numero;
+          seleccionadoNum   = numero;
+          seleccionadoClave = _asientosMap[numero]?.asiento;
         });
       },
-
       child: Container(
-        width: 34,
-        height: 34,
-        decoration: BoxDecoration(
-          color: color,
-          shape: BoxShape.circle,
-        ),
+        width: 40, height: 40,
+        decoration: BoxDecoration(color: color, shape: BoxShape.circle),
         alignment: Alignment.center,
-
-        child: Text(
-          "$numero",
-          style: const TextStyle(
-            fontSize: 11,
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
+        child: Text("$numero",
+            style: const TextStyle(fontSize: 15, color: Colors.white, fontWeight: FontWeight.bold)),
       ),
     );
   }
 
   Widget fila(int a, int b, int c, int d) {
-
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10),
-
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-
-          asiento(a),
-          const SizedBox(width: 10),
-
+          const SizedBox(height: 40),
+          asiento(a), const SizedBox(width: 10),
           asiento(b),
-
-          const SizedBox(width: 50),
-
-          asiento(c),
-          const SizedBox(width: 10),
-
+          const SizedBox(width: 90),
+          asiento(c), const SizedBox(width: 10),
           asiento(d),
-
         ],
       ),
     );
@@ -92,101 +115,72 @@ class _AsientosPlatPlusState extends State<AsientosPlatPlus> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       backgroundColor: const Color(0xFFF4F6FB),
-
       body: SafeArea(
-        child: Column(
-          children: [
-
-            const SizedBox(height: 10),
-
-            _cardViaje(),
-
-            const SizedBox(height: 15),
-
-            _cardEstados(),
-
-            const SizedBox(height: 15),
-
-            Expanded(
-              child: SingleChildScrollView(
-                child: _mapaBus(),
-              ),
+        child: _cargando
+          ? const Center(child: CircularProgressIndicator(color: Color(0xFF2A5CAA)))
+          : Column(
+              children: [
+                const SizedBox(height: 10),
+                _cardViaje(),
+                const SizedBox(height: 15),
+                _cardEstados(),
+                const SizedBox(height: 15),
+                Expanded(child: SingleChildScrollView(child: _mapaBus())),
+                const SizedBox(height: 10),
+                _botones(),
+                const SizedBox(height: 20),
+              ],
             ),
-
-            const SizedBox(height: 10),
-
-            _botones(),
-
-            const SizedBox(height: 20),
-
-          ],
-        ),
       ),
     );
   }
 
   Widget _cardViaje() {
-
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
-
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: _box(),
-
         child: Column(
           children: [
-
-            const Row(
+            Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text("Fecha"),
-                Text("Servicio"),
-                Text("Fecha")
+                Text(widget.corrida.fechaSalida,
+                    style: const TextStyle(fontSize: 12, color: Color(0xFF2A5CAA), fontWeight: FontWeight.w600)),
+                const Text("PLATINO",
+                    style: TextStyle(fontSize: 16, color: Color(0xFF2A5CAA), fontWeight: FontWeight.w600)),
+                Text(widget.corrida.fechaLlegada,
+                    style: const TextStyle(fontSize: 12, color: Color(0xFF2A5CAA), fontWeight: FontWeight.w600)),
               ],
             ),
-
             const SizedBox(height: 5),
-
             Row(
               children: [
-
-                const Text(
-                  "Origen",
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-
+                Text(widget.corrida.ciudadOrigen,
+                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
                 const SizedBox(width: 10),
-
-                Expanded(
-                  child: Container(
-                    height: 3,
-                    color: const Color(0xFF2A5CAA),
-                  ),
-                ),
-
+                Expanded(child: Container(height: 3, color: const Color(0xFF2A5CAA))),
                 const SizedBox(width: 10),
-
-                const Text(
-                  "Destino",
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
+                Text(widget.corrida.ciudadDestino,
+                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
               ],
             ),
-
             const SizedBox(height: 5),
-
-            const Row(
+            Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text("Hora"),
-                Text("Autobús 183"),
-                Text("Hora")
+                Text(widget.corrida.horaSalida,
+                    style: const TextStyle(fontSize: 13, color: Color(0xFF2A5CAA), fontWeight: FontWeight.w600)),
+                Text("Autobús: ${widget.corrida.autobus}",
+                    style: const TextStyle(fontSize: 13, color: Color(0xFF2A5CAA), fontWeight: FontWeight.bold)),
+                Text(widget.corrida.horaLlegada,
+                    style: const TextStyle(fontSize: 13, color: Color(0xFF2A5CAA), fontWeight: FontWeight.w600)),
               ],
             ),
+            const SizedBox(height: 5),
           ],
         ),
       ),
@@ -194,42 +188,17 @@ class _AsientosPlatPlusState extends State<AsientosPlatPlus> {
   }
 
   Widget _cardEstados() {
-
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
-
       child: Container(
         padding: const EdgeInsets.all(12),
         decoration: _box(),
-
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-
           children: const [
-
-            Row(
-              children: [
-                CircleAvatar(radius: 8, backgroundColor: Colors.green),
-                SizedBox(width: 5),
-                Text("Disponible"),
-              ],
-            ),
-
-            Row(
-              children: [
-                CircleAvatar(radius: 8, backgroundColor: Colors.grey),
-                SizedBox(width: 5),
-                Text("Ocupado"),
-              ],
-            ),
-
-            Row(
-              children: [
-                CircleAvatar(radius: 8, backgroundColor: Color(0xFF2A5CAA)),
-                SizedBox(width: 5),
-                Text("Seleccionado"),
-              ],
-            ),
+            Row(children: [CircleAvatar(radius: 8, backgroundColor: Colors.green), SizedBox(width: 5), Text("Disponible")]),
+            Row(children: [CircleAvatar(radius: 8, backgroundColor: Colors.grey), SizedBox(width: 5), Text("Ocupado")]),
+            Row(children: [CircleAvatar(radius: 8, backgroundColor: Color(0xFF2A5CAA)), SizedBox(width: 5), Text("Seleccionado")]),
           ],
         ),
       ),
@@ -237,51 +206,32 @@ class _AsientosPlatPlusState extends State<AsientosPlatPlus> {
   }
 
   Widget _mapaBus() {
-
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
-
       child: Container(
         height: 900,
         padding: const EdgeInsets.all(10),
-
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(30),
-          border: Border.all(
-            color: const Color(0xFF2A5CAA),
-            width: 3,
-          ),
+          border: Border.all(color: const Color(0xFF2A5CAA), width: 3),
         ),
-
         child: Stack(
           alignment: Alignment.center,
           children: [
-
             Positioned.fill(
               child: RotatedBox(
                 quarterTurns: 1,
-                child: Image.asset(
-                  "assets/images/mapa_platino_1.png",
-                  fit: BoxFit.contain,
-                ),
+                child: Image.asset("assets/images/mapa_platino_1.png", fit: BoxFit.contain),
               ),
             ),
-
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-
-                fila(1, 2, 3, 4),
-                fila(5, 6, 7, 8),
-                fila(9, 10, 11, 12),
-                fila(13, 14, 15, 16),
-                fila(17, 18, 19, 20),
-                fila(21, 22, 23, 24),
-                fila(25, 26, 27, 28),
-                fila(29, 30, 31, 32),
-                fila(33, 34, 35, 36),
-
+                const SizedBox(height: 20),
+                fila(1,2,3,4), fila(5,6,7,8), fila(9,10,11,12),
+                fila(13,14,15,16), fila(17,18,19,20), fila(21,22,23,24),
+                fila(25,26,27,28), fila(29,30,31,32), fila(33,34,35,36),
               ],
             ),
           ],
@@ -291,75 +241,54 @@ class _AsientosPlatPlusState extends State<AsientosPlatPlus> {
   }
 
   Widget _botones() {
-
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
-
       child: Row(
         children: [
-
           Container(
-            width: 55,
-            height: 55,
-            decoration: BoxDecoration(
-              color: const Color(0xFF2A5CAA),
-              borderRadius: BorderRadius.circular(25),
-            ),
+            width: 65, height: 65,
+            decoration: BoxDecoration(color: const Color(0xFF2A5CAA), borderRadius: BorderRadius.circular(25)),
             child: IconButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
+              onPressed: () => Navigator.pop(context),
               icon: const Icon(Icons.home, color: Colors.white, size: 26),
             ),
           ),
-
           const SizedBox(width: 15),
-
           Expanded(
             child: SizedBox(
               height: 55,
-
               child: ElevatedButton(
-
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF2A5CAA),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(25),
-                  ),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
                 ),
-
                 onPressed: () {
-
-                  if (seleccionado == null) return;
-
+                  if (seleccionadoNum == null || seleccionadoClave == null) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Selecciona un asiento')),
+                    );
+                    return;
+                  }
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => RegistrarPasajero(
-                        totalPasajeros: widget.totalPasajeros,
-                        pasajeroActual: widget.pasajeroActual,
-                        asiento: seleccionado!,
+                      builder: (_) => RegistrarPasajero(
+                        totalPasajeros:      widget.totalPasajeros,
+                        pasajeroActual:      widget.pasajeroActual,
+                        asientoClave:        seleccionadoClave!,
+                        asientoNumero:       seleccionadoNum!,
+                        corrida:             widget.corrida,
+                        pasajerosAcumulados: widget.pasajerosAcumulados,
                       ),
                     ),
                   ).then((_) {
-
                     setState(() {
-
-                      ocupados.add(seleccionado!);
-                      seleccionado = null;
-
+                      seleccionadoNum   = null;
+                      seleccionadoClave = null;
                     });
-
                   });
                 },
-
-                child: const Text(
-                  "Continuar",
-                  style: TextStyle(
-                    fontSize: 18,
-                    color: Colors.white,
-                  ),
-                ),
+                child: const Text("Continuar", style: TextStyle(fontSize: 18, color: Colors.white)),
               ),
             ),
           ),
@@ -369,18 +298,10 @@ class _AsientosPlatPlusState extends State<AsientosPlatPlus> {
   }
 
   BoxDecoration _box() {
-
     return BoxDecoration(
       color: Colors.white,
       borderRadius: BorderRadius.circular(20),
-
-      boxShadow: const [
-        BoxShadow(
-          color: Colors.black12,
-          blurRadius: 10,
-          offset: Offset(0, 4),
-        ),
-      ],
+      boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 10, offset: Offset(0, 4))],
     );
   }
 }
