@@ -46,7 +46,8 @@ class _LoginScreenState extends State<LogInScreen> {
         }
       } catch (e) {
         setState(() {
-          _errorMessage = e.toString();
+          _errorMessage =
+              'El correo electrónico o la contraseña son incorrectos';
         });
 
         ScaffoldMessenger.of(
