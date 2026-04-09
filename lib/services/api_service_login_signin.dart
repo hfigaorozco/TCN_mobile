@@ -8,16 +8,34 @@ import '../config.dart';
 class ApiServiceLoginSignin {
   static const String baseUrl = Config.baseUrl;
 
-  //Guardar el token de Login
+  //Guardar el token
   Future<void> guardarToken(String token) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('auth_token', token);
   }
 
-  //Obtener el token guardado
+  //Guardar datos de usuario
+  Future<void> guardarDatosUsuario(int id, String nombre, String email) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('id', id);
+    await prefs.setString('nombre', nombre);
+    await prefs.setString('email', email);
+  }
+
+  //Obtener el token
   Future<String?> obtenerToken() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString('auth_token');
+  }
+
+  //Obtener datos de ususario guardados
+  Future<Map<String, dynamic>> obtenerDatosUsuario() async {
+    final prefs = await SharedPreferences.getInstance();
+    return {
+      'id': prefs.getInt('id'),
+      'correo': prefs.getString('email'),
+      'nombre': prefs.getString('nombre'),
+    };
   }
 
   //Eliminar el token para logout
@@ -30,7 +48,7 @@ class ApiServiceLoginSignin {
   Future<Map<String, String>> _obtenerHeaders() async {
     final token = await obtenerToken();
     return {
-      'content-Type': 'application/json',
+      'Content-Type': 'application/json',
       'Authorization': 'Token $token',
     };
   }
@@ -71,9 +89,13 @@ class ApiServiceLoginSignin {
 
     if (respuesta.statusCode == 200) {
       final data = jsonDecode(respuesta.body);
-      print(data);
       final loginRespuesta = LoginRespuesta.fromJson(data);
       await guardarToken(loginRespuesta.token);
+      await guardarDatosUsuario(
+        loginRespuesta.id,
+        loginRespuesta.nombre,
+        loginRespuesta.email,
+      );
       return loginRespuesta;
     } else {
       throw Exception('Error al iniciar sesion: ${respuesta.body}');

@@ -1,14 +1,7 @@
-import 'package:flutter/material.dart';
 import 'splash_screen.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:flutter/material.dart';
 
-Future<void> main() async {
-  await Supabase.initialize(
-    url: 'https://cqnoiwypofsmrmtzlyqf.supabase.co',
-    anonKey: 'sb_publishable_4jbwWLvGb1uSQc-w6sCpFQ_lQWKWuMB',
-  );
-  runApp(const MyApp());
-}
+void main() => runApp(const MyApp());
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
