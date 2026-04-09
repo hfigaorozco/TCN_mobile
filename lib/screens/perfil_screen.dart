@@ -36,7 +36,7 @@ class _PerfilScreenState extends State<PerfilScreen> {
     setState(() {
       _user = datos['id'];
       _nombre = datos['nombre'];
-      _correo = datos['email']
+      _correo = datos['email'];
     });
   }
 
@@ -129,7 +129,8 @@ class _PerfilScreenState extends State<PerfilScreen> {
   }
 
   Future<void> logout(BuildContext context) async {
-    await supabase.auth.signOut();
+    final api = ApiServiceLoginSignin();
+    await api.quitarToken();
 
     Navigator.pushAndRemoveUntil(
       context,
@@ -140,10 +141,6 @@ class _PerfilScreenState extends State<PerfilScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final _user;
-    final _nombre;
-    final _correo;
-
     return Scaffold(
       backgroundColor: const Color(0xFFF2F2F7),
       appBar: const SharedAppBar(),
@@ -273,7 +270,7 @@ class _PerfilScreenState extends State<PerfilScreen> {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    _nombre,
+                    _nombre ?? 'Usuario',
                     style: const TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.bold,
@@ -292,7 +289,7 @@ class _PerfilScreenState extends State<PerfilScreen> {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    _correo,
+                    _correo ?? 'Correo',
                     style: const TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.bold,

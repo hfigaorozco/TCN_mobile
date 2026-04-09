@@ -1,14 +1,20 @@
 // shared navbar
 
 import 'package:flutter/material.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import 'viajar_screen.dart';
 import 'reservaciones_screen.dart';
 import 'perfil_screen.dart';
 import 'login_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SharedNavBar extends StatelessWidget {
   final int selectedIndex;
+
+  Future<String?> _obtenerSesion() async {
+    final prefs = await SharedPreferences.getInstance();
+    final _session = prefs.getString('auth_token');
+    return _session;
+  }
 
   const SharedNavBar({super.key, required this.selectedIndex});
 
@@ -19,7 +25,11 @@ class SharedNavBar extends StatelessWidget {
       decoration: const BoxDecoration(
         color: Colors.white,
         boxShadow: [
-          BoxShadow(color: Colors.black12, blurRadius: 10, offset: Offset(0, -2)),
+          BoxShadow(
+            color: Colors.black12,
+            blurRadius: 10,
+            offset: Offset(0, -2),
+          ),
         ],
       ),
       child: Row(
@@ -33,11 +43,16 @@ class SharedNavBar extends StatelessWidget {
     );
   }
 
-  Widget _navItem(BuildContext context, IconData icon, String label, int index) {
+  Widget _navItem(
+    BuildContext context,
+    IconData icon,
+    String label,
+    int index,
+  ) {
     final bool isSelected = selectedIndex == index;
 
     return GestureDetector(
-      onTap: () {
+      onTap: () async {
         if (isSelected) return;
 
         if (index == 0) {
@@ -54,8 +69,7 @@ class SharedNavBar extends StatelessWidget {
           );
         }
         if (index == 2) {
-          final session = Supabase.instance.client.auth.currentSession;
-          if (session != null) {
+          if (await _obtenerSesion() != null) {
             Navigator.push(
               context,
               MaterialPageRoute(builder: (_) => const PerfilScreen()),
@@ -77,7 +91,10 @@ class SharedNavBar extends StatelessWidget {
               color: isSelected ? const Color(0xFF1F5FBF) : Colors.transparent,
               shape: BoxShape.circle,
             ),
-            child: Icon(icon, color: isSelected ? Colors.white : const Color(0xFF1F5FBF)),
+            child: Icon(
+              icon,
+              color: isSelected ? Colors.white : const Color(0xFF1F5FBF),
+            ),
           ),
           const SizedBox(height: 5),
           Text(label, style: const TextStyle(color: Color(0xFF1F5FBF))),

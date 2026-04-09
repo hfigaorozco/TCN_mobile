@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import 'registro_screen.dart';
 import 'perfil_screen.dart';
 import '../services/api_service_login_signin.dart';
 import 'viajar_screen.dart';
-
-final supabase = Supabase.instance.client;
 
 class LogInScreen extends StatefulWidget {
   const LogInScreen({super.key});

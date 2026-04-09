@@ -33,15 +33,18 @@ class ApiServiceLoginSignin {
     final prefs = await SharedPreferences.getInstance();
     return {
       'id': prefs.getInt('id'),
-      'correo': prefs.getString('email'),
+      'email': prefs.getString('email'),
       'nombre': prefs.getString('nombre'),
     };
   }
 
-  //Eliminar el token para logout
+  //Eliminar los datos de usuario para logout
   Future<void> quitarToken() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove('auth_token');
+    await prefs.remove('id');
+    await prefs.remove('email');
+    await prefs.remove('nombre');
   }
 
   //Obtener headers con token
