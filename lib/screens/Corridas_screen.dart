@@ -54,6 +54,7 @@ class _CorridasScreenState extends State<CorridasScreen> {
     }
   }
 
+  // Función para mostrar HH:MM (sin segundos)
   String _formatearHora(String hora) {
     final partes = hora.split(":");
     if (partes.length >= 2) {
@@ -62,17 +63,20 @@ class _CorridasScreenState extends State<CorridasScreen> {
     return hora;
   }
 
+  // Función para mostrar DD/MM de la fecha
   String _formatearFecha(String fecha) {
-    final partes = fecha.split("-");
-    if (partes.length == 3) {
-      return "${partes[1]}/${partes[2]}";
+    try {
+      final dt = DateTime.parse(fecha);
+      return "${dt.day.toString().padLeft(2,'0')}/${dt.month.toString().padLeft(2,'0')}";
+    } catch (e) {
+      return fecha;
     }
-    return fecha;
   }
 
   @override
   Widget build(BuildContext context) {
-    final fechaStr = '${widget.fecha.month}/${widget.fecha.day}';
+    final fechaStr =
+        "${widget.fecha.day.toString().padLeft(2,'0')}/${widget.fecha.month.toString().padLeft(2,'0')}";
 
     return Scaffold(
       backgroundColor: const Color(0xFFF4F6FB),
@@ -275,6 +279,7 @@ class _CorridasScreenState extends State<CorridasScreen> {
             Expanded(
               child: Column(
                 children: [
+                  const SizedBox(height: 10),
                   Text("\$${corrida.tarifaBase.toStringAsFixed(0)}",
                       style: TextStyle(
                           fontSize: 13,
