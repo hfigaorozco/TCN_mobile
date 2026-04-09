@@ -223,7 +223,7 @@ class _ReservacionesScreenState extends State<ReservacionesScreen> {
 
       appBar: const SharedAppBar(),
 
-      bottomNavigationBar: const SharedNavBar(selectedIndex: 1),
+      bottomNavigationBar: const SharedNavbar(selectedIndex: 1),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
