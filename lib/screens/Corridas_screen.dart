@@ -84,7 +84,7 @@ class _CorridasScreenState extends State<CorridasScreen> {
       body: SafeArea(
         child: Column(
           children: [
-            const SizedBox(height: 20),
+            const SizedBox(height: 10),
 
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -154,57 +154,35 @@ class _CorridasScreenState extends State<CorridasScreen> {
   }
 
   Widget _cardBusqueda(String fechaStr) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: _boxDecoration(),
-      child: Column(
-        children: [
-          Row(
+    return SizedBox(
+      width: double.infinity,  
+      child: Card(
+        color: Colors.white,
+        elevation: 6,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(18),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+          child: Column(
             children: [
-              Text(widget.origen,
-                  style: const TextStyle(
-                      fontWeight: FontWeight.bold, fontSize: 15)),
-
-              Expanded(
-                child: Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 4),
-                  height: 2,
-                  color: const Color(0xFF2A5CAA),
+              Text(
+                "Horarios",
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  fontSize: 30,
+                  fontWeight: FontWeight.w900,
                 ),
               ),
-
-              Text(widget.destino,
-                  style: const TextStyle(
-                      fontWeight: FontWeight.bold, fontSize: 15)),
             ],
           ),
-          const SizedBox(height: 12),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(children: [
-                const Text("Fecha "),
-                Text(fechaStr,
-                    style: const TextStyle(
-                        color: Color(0xFF2A5CAA),
-                        fontWeight: FontWeight.bold)),
-              ]),
-              Row(children: [
-                const Text("Pasajeros "),
-                Text("${widget.totalPasajeros}",
-                    style: const TextStyle(
-                        color: Color(0xFF2A5CAA),
-                        fontWeight: FontWeight.bold)),
-              ]),
-            ],
-          ),
-        ],
+        ),
       ),
     );
   }
 
   Widget _cardCorrida(Corrida corrida) {
-    final tipo = corrida.tipoAutobus?.trim().toUpperCase();
+    final tipo = corrida.tipoAutobus.trim().toUpperCase();
 
     final bool esPlatino = tipo == 'PLAT';
     final bool esPlus = tipo == 'PLUS';
@@ -245,7 +223,7 @@ class _CorridasScreenState extends State<CorridasScreen> {
         }
       },
       child: Container(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(10),
         decoration: _boxDecoration(),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -280,29 +258,30 @@ class _CorridasScreenState extends State<CorridasScreen> {
               child: Column(
                 children: [
                   const SizedBox(height: 10),
-                  Text("\$${corrida.tarifaBase.toStringAsFixed(0)}",
-                      style: TextStyle(
-                          fontSize: 13,
-                          color: colorPrincipal,
-                          fontWeight: FontWeight.w600)),
-
-                  const SizedBox(height: 6),
+                  Text(esPlatino ? "Platino" : esPlus ? "Plus" : tipo ?? "",
+                    style: TextStyle(fontSize: 15,
+                      color: colorPrincipal,
+                      fontWeight: FontWeight.w800)
+                  ),
+    
+                  const SizedBox(height: 8),
 
                   Container(
                     height: 2,
                     color: colorPrincipal,
                   ),
 
-                  const SizedBox(height: 6),
+                  const SizedBox(height: 8),
 
                   Text("Autobús ${corrida.autobus}",
-                      style: const TextStyle(
-                          fontSize: 12, fontWeight: FontWeight.bold)),
-                  Text("${corrida.lugaresDisp} lugares",
                       style: TextStyle(
-                          fontSize: 11,
-                          color: colorPrincipal,
-                          fontWeight: FontWeight.bold)),
+                          fontSize: 12, fontWeight: FontWeight.bold, color: colorPrincipal,)),
+                  const SizedBox(height: 3.5),
+                  Text("\$${corrida.tarifaBase.toStringAsFixed(0)}",
+                    style: TextStyle(
+                        fontSize: 14,
+                        color: colorPrincipal,
+                        fontWeight: FontWeight.bold)),
                 ],
               ),
             ),
