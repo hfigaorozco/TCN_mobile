@@ -83,7 +83,7 @@ class _ResumenCompraScreenState extends State<ResumenCompraScreen> {
       if (response.statusCode == 201) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('¡Compra realizada con éxito!')),
+            const SnackBar(content: Text('¡Compra exitosa!, revisa tus boletos en "Mis reservaciones"')),
           );
           Navigator.of(context).popUntil((route) => route.isFirst);
         }
