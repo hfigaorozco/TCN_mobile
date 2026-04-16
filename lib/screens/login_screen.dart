@@ -16,7 +16,6 @@ class _LoginScreenState extends State<LogInScreen> {
   final _passwordController = TextEditingController();
   final _apiService = ApiServiceLoginSignin();
   bool _isLoading = false;
-  String? _errorMessage;
 
   Future<void> _login() async {
     if (_emailController.text.isEmpty ||
@@ -45,13 +44,9 @@ class _LoginScreenState extends State<LogInScreen> {
           );
         }
       } catch (e) {
-        setState(() {
-          _errorMessage = e.toString();
-        });
-
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('$_errorMessage')));
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('El correo o contraseña no coinciden')),
+        );
       } finally {
         setState(() {
           _isLoading = false;

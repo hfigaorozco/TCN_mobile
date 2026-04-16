@@ -50,6 +50,7 @@ class _ResumenCompraScreenState extends State<ResumenCompraScreen> {
     final prefs     = await SharedPreferences.getInstance();
     final token     = prefs.getString('auth_token');
     final usuarioId = prefs.getInt('id');
+    print('>>> usuarioId desde prefs: $usuarioId');
 
     if (token == null || usuarioId == null) {
       await Navigator.push(
