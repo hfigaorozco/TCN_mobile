@@ -1,0 +1,375 @@
+import 'package:flutter/material.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
+import '../models/corrida.dart';
+import '../models/pasajero_compra.dart';
+import '../config.dart';
+import 'shared_appbar.dart';
+import 'shared_navbar.dart';
+import 'login_screen.dart';
+
+class ResumenCompraScreen extends StatefulWidget {
+  final Corrida corrida;
+  final List<PasajeroCompra> pasajeros;
+
+  const ResumenCompraScreen({
+    super.key,
+    required this.corrida,
+    required this.pasajeros,
+  });
+
+  @override
+  State<ResumenCompraScreen> createState() => _ResumenCompraScreenState();
+}
+
+class _ResumenCompraScreenState extends State<ResumenCompraScreen> {
+  bool _procesando = false;
+
+  static const double IVA_RATE = 0.16;
+
+  final Map<String, double> _descuentos = {
+    'REGU': 0.0,
+    'NINO': 0.5,
+    '3DAD': 0.5,
+  };
+
+  double _precioPasajero(PasajeroCompra p) {
+    final desc = _descuentos[p.tipoPasajero] ?? 0.0;
+    return widget.corrida.tarifaBase * (1 - desc);
+  }
+
+  double get _total =>
+      widget.pasajeros.fold(0.0, (sum, p) => sum + _precioPasajero(p));
+
+  double get _subtotal => _total / (1 + IVA_RATE);
+
+  double get _iva => _total - _subtotal;
+
+  Future<void> _confirmarCompra() async {
+    final prefs     = await SharedPreferences.getInstance();
+    final token     = prefs.getString('auth_token');
+    final usuarioId = prefs.getInt('id');
+
+    if (token == null || usuarioId == null) {
+      await Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => const LogInScreen()),
+      );
+
+      final prefsPost = await SharedPreferences.getInstance();
+      final tokenPost = prefsPost.getString('auth_token');
+      if (tokenPost == null) return;
+
+      _confirmarCompra();
+      return;
+    }
+
+    setState(() => _procesando = true);
+
+    try {
+      final body = {
+        'corrida_id': widget.corrida.numero,
+        'usuario_id': usuarioId,
+        'pasajeros': widget.pasajeros.map((p) => p.toJson()).toList(),
+      };
+
+      final response = await http.post(
+        Uri.parse('${Config.baseUrl}/generar-boletos/'),
+        headers: {'Content-Type': 'application/json'},
+        body: json.encode(body),
+      );
+
+      if (response.statusCode == 201) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('¡Compra exitosa!, revisa tus boletos en "Mis reservaciones"')),
+          );
+          Navigator.of(context).popUntil((route) => route.isFirst);
+        }
+      } else {
+        final error = json.decode(response.body);
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Error: ${error['error'] ?? 'Intenta de nuevo'}')),
+          );
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Error de conexión')),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _procesando = false);
+    }
+  }
+
+  // Nueva función para formatear horas HH:MM
+  String _formatearHora(String hora) {
+    final partes = hora.split(":");
+    if (partes.length >= 2) return "${partes[0]}:${partes[1]}";
+    return hora;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: const Color(0xFFF2F2F7),
+      appBar: const SharedAppBar(),
+      bottomNavigationBar: const SharedNavbar(selectedIndex: 1),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          children: [
+            _card(
+              child: const Text(
+                'Resumen de compra',
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.w700),
+              ),
+            ),
+
+            const SizedBox(height: 16),
+
+            _card(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _seccion(
+                    "Ruta",
+                    "${widget.corrida.ciudadOrigen} - ${widget.corrida.ciudadDestino}",
+                  ),
+                  const Divider(),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: _seccion(
+                          "Salida",
+                          "${widget.corrida.fechaSalida}\n${_formatearHora(widget.corrida.horaSalida)}",
+                        ),
+                      ),
+                      Expanded(
+                        child: _seccion(
+                          "Llegada",
+                          "${widget.corrida.fechaLlegada}\n${_formatearHora(widget.corrida.horaLlegada)}",
+                        ),
+                      ),
+                    ],
+                  ),
+                  const Divider(),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: _seccion(
+                          "Autobús",
+                          "${widget.corrida.autobus}",
+                        ),
+                      ),
+                      Expanded(
+                        child: _seccion(
+                          "Servicio",
+                          widget.corrida.tipoAutobus == 'PLAT'
+                              ? 'PLATINO'
+                              : 'PLUS',
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 16),
+
+            ...widget.pasajeros.asMap().entries.map((entry) {
+              final i = entry.key;
+              final p = entry.value;
+              final precio = _precioPasajero(p);
+
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 12),
+                child: _card(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Pasajero ${i + 1} — Asiento ${p.asientoNumero}",
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                          color: Color(0xFF0961C6),
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text("${p.nombre} ${p.apellPat} ${p.apellMat}".trim()),
+                      Text("Edad: ${p.edad}"),
+                      Text("Tipo: ${_labelTipo(p.tipoPasajero)}"),
+                      const SizedBox(height: 5),
+                      Text(
+                        "\$${precio.toStringAsFixed(2)} MXN",
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF0961C6),
+                          fontSize: 15,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            }),
+
+            const SizedBox(height: 4),
+
+            _card(
+              child: Column(
+                children: [
+                  _filaCosto("Subtotal", _subtotal),
+                  _filaCosto("IVA (16%)", _iva),
+                  const Divider(),
+                  _filaCosto("Total", _total, grande: true),
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 20),
+
+            SizedBox(
+              width: double.infinity,
+              height: 55,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF0961C6),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(25),
+                  ),
+                ),
+                onPressed: _procesando ? null : _confirmarCompra,
+                child: _procesando
+                    ? const CircularProgressIndicator(color: Colors.white)
+                    : const Text(
+                        "Confirmar compra",
+                        style: TextStyle(
+                          fontSize: 20,
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+              ),
+            ),
+
+            const SizedBox(height: 12),
+
+            SizedBox(
+              width: double.infinity,
+              height: 55,
+              child: ElevatedButton.icon(
+                icon: const Icon(Icons.arrow_back, color: Colors.white),
+                label: const Text(
+                  "Cancelar",
+                  style: TextStyle(fontSize: 18, color: Colors.white),
+                ),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFFFF8600),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(25),
+                  ),
+                ),
+                onPressed: _procesando
+                    ? null
+                    : () => Navigator.of(context)
+                        .popUntil((route) => route.isFirst),
+              ),
+            ),
+
+            const SizedBox(height: 20),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _card({required Widget child}) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: const Color(0xFFE9EDF6), width: 2),
+        boxShadow: const [
+          BoxShadow(
+            color: Colors.black12,
+            blurRadius: 8,
+            offset: Offset(0, 3),
+          )
+        ],
+      ),
+      child: child,
+    );
+  }
+
+  Widget _seccion(String titulo, String valor) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            titulo,
+            style: const TextStyle(
+              fontSize: 13,
+              color: Color(0xFF0961C6),
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          const SizedBox(height: 2),
+          Text(
+            valor,
+            style: const TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _filaCosto(String label, double monto, {bool grande = false}) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: grande ? 18 : 15,
+              fontWeight: grande ? FontWeight.bold : FontWeight.normal,
+            ),
+          ),
+          Text(
+            "\$${monto.toStringAsFixed(2)} MXN",
+            style: TextStyle(
+              fontSize: grande ? 18 : 15,
+              fontWeight: grande ? FontWeight.bold : FontWeight.normal,
+              color: const Color(0xFF0961C6),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  String _labelTipo(String codigo) {
+    const labels = {
+      'REGU': 'Regular',
+      'NINO': 'Niño (50% desc)',
+      '3DAD': '3ra Edad (50% desc)',
+    };
+    return labels[codigo] ?? codigo;
+  }
+}
