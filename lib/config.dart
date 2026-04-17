@@ -1,4 +1,4 @@
 class Config {
   static const String baseUrl =
-      'http://192.168.0.8:8000/transportes-cuervo-negro/api';
+      'http://172.20.10.5:8000/transportes-cuervo-negro/api';
 }
