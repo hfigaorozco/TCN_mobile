@@ -50,6 +50,11 @@ class _RegistrarPasajeroState extends State<RegistrarPasajero> {
     return 'REGU';
   }
 
+  bool _validarLongitud(String texto) {
+    final t = texto.trim();
+    return t.length >= 2 && t.length <= 30;
+  }
+
   void _continuar() {
     if (nombre.text.trim().isEmpty ||
         apellido1.text.trim().isEmpty ||
@@ -60,10 +65,22 @@ class _RegistrarPasajeroState extends State<RegistrarPasajero> {
       return;
     }
 
-    final edadInt = int.tryParse(edad.text.trim());
-    if (edadInt == null || edadInt <= 0) {
+    if (!_validarLongitud(nombre.text) ||
+        !_validarLongitud(apellido1.text) ||
+        (apellido2.text.trim().isNotEmpty && !_validarLongitud(apellido2.text))) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Ingresa una edad válida')),
+        const SnackBar(
+          content: Text('Nombre y apellidos deben tener entre 2 y 30 caracteres'),
+        ),
+      );
+      return;
+    }
+
+    final edadInt = int.tryParse(edad.text.trim());
+
+    if (edadInt == null || edadInt < 1 || edadInt > 120) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('La edad debe estar entre 1 y 120 años')),
       );
       return;
     }
